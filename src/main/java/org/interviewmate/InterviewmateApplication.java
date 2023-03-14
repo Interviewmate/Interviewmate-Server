@@ -1,4 +1,4 @@
-package org.im.interviewmate;
+package org.interviewmate;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
