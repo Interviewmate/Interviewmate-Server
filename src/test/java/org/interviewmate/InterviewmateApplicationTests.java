@@ -1,4 +1,4 @@
-package org.im.interviewmate;
+package org.interviewmate;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
