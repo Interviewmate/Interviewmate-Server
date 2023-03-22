@@ -4,12 +4,6 @@ on:
   push:
     branches: [ dev ]
     
-env:
-  AWS_REGION: ap-northeast-2
-  S3_BUCKET_NAME: interviewmate-deploy-bucket
-  CODE_DEPLOY_APPLICATION_NAME: interviewmate
-  CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: interviewmate-deploy-group
-
 permissions:
   contents: read
 
