@@ -1,4 +1,4 @@
-name: CI with Gradle
+name: CI
 
 on:
   push:
@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  CI:
     runs-on: ubuntu-18.04
 
     steps:
