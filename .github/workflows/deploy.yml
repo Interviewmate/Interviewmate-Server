@@ -9,7 +9,7 @@ name: CD
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [ dev ]
     
 env:
   AWS_REGION: ap-northeast-2
