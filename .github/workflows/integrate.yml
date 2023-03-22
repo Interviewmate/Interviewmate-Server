@@ -1,8 +1,8 @@
-name: Java CI with Gradle
+name: CI with Gradle
 
 on:
-  pull_request:
-    branches: [ main ]
+  push:
+    branches: [ dev ]
     
 env:
   AWS_REGION: ap-northeast-2
@@ -40,6 +40,4 @@ jobs:
       run: chmod +x ./gradlew
         
     - name: Build with Gradle
-      # uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
-      # with:
       run: ./gradlew clean build --exclude-task test
