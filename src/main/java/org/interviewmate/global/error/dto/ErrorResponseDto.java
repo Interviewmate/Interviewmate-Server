@@ -14,7 +14,7 @@ public class ErrorResponseDto {
 
     private String timestamp;
     private String trackingId;
-    private int status;
+    private int code;
     private String messgae;
     private String detailMessage;
 
@@ -22,7 +22,7 @@ public class ErrorResponseDto {
     public ErrorResponseDto(CustomException e) {
         this.timestamp = LocalDateTime.now().toString();
         this.trackingId = UUID.randomUUID().toString();
-        this.status = e.getErrorCode().getStatus();
+        this.code = e.getErrorCode().getStatus();
         this.messgae = e.getErrorCode().getMessage();
         this.detailMessage = e.getMessage();
     }
@@ -30,7 +30,7 @@ public class ErrorResponseDto {
     public ErrorResponseDto(ErrorCode e) {
         this.timestamp = LocalDateTime.now().toString();
         this.trackingId = UUID.randomUUID().toString();
-        this.status = e.getStatus();
+        this.code = e.getStatus();
         this.messgae = e.getMessage();
         this.detailMessage = e.getMessage();
     }
