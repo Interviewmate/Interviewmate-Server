@@ -25,7 +25,7 @@ public class ResponseUtil {
      * @param <T>
      */
     public static <T> ResponseDto<T> FAILURE(ResponseCode code) {
-        return new ResponseDto(ResponseStatus.FAILURE, code.getCode(),code.getMessage(), null);
+        return new ResponseDto(ResponseStatus.FAILURE, code.name(),code.getMessage(), null);
     }
 
     /**

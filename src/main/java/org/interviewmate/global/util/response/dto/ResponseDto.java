@@ -11,7 +11,7 @@ import org.interviewmate.global.util.response.ResponseStatus;
 public class ResponseDto<T> {
     private final ResponseStatus status;
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private final Integer code;
+    private final String code;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private final String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
