@@ -3,7 +3,6 @@ package org.interviewmate.global.util.response.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.interviewmate.global.util.response.ResponseCode;
 import org.interviewmate.global.util.response.ResponseStatus;
 
 @Getter

@@ -5,7 +5,6 @@ import org.interviewmate.global.error.dto.ErrorResponseDto;
 import org.interviewmate.global.error.exception.CustomException;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
