@@ -31,7 +31,7 @@ public class TestController {
 
     @GetMapping("/failure")
     public ResponseDto failResponseTest() {
-        return ResponseUtil.FAILURE(ResponseCode.FAILURE);
+        return ResponseUtil.FAILURE(ResponseCode.FAILURE_ALREADY_REPORTED);
     }
 
     @GetMapping("/error")
@@ -41,6 +41,6 @@ public class TestController {
 
     @GetMapping("/exception")
     public void exceptionResponseTest() {
-        throw new TestException(ErrorCode.NOT_FOUND_DATA,"test exception입니다");
+        throw new TestException(ErrorCode.NOT_FOUND_DATA);
     }
 }

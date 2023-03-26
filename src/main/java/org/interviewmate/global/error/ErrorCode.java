@@ -2,12 +2,13 @@ package org.interviewmate.global.error;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    NOT_FOUND_DATA(404, "해당하는 데이터를 찾을 수 없습니다");
+    NOT_FOUND_DATA(HttpStatus.NOT_FOUND, "해당하는 데이터를 찾을 수 없습니다");
 
-    private final int status; //이것도 HttpStatus로 할지 정해야함
+    private final HttpStatus status;
     private final String message;
 }

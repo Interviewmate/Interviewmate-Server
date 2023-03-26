@@ -15,8 +15,7 @@ public class ControllerAdvisor {
     @ExceptionHandler
     protected ResponseDto<ErrorResponseDto> customExceptionHandler(CustomException e) {
         ErrorResponseDto dto = ErrorResponseDto.of(e.getErrorCode());
-        dto.setDetailMessage(e.getMessage());
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
-        return ResponseUtil.ERROR(dto);
+        return ResponseUtil.ERROR(e.getErrorCode(), dto);
     }
 }
