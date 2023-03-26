@@ -31,7 +31,7 @@ public class TestController {
 
     @GetMapping("/failure")
     public ResponseDto failResponseTest() {
-        return ResponseUtil.FAILURE(ResponseCode.FAILURE_ALREADY_REPORTED);
+        return ResponseUtil.FAILURE(ResponseCode.FAILURE_ALREADY_REPORTED, new ArrayList<>());
     }
 
     @GetMapping("/error")

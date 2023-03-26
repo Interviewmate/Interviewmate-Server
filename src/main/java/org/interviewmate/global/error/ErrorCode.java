@@ -9,6 +9,6 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     NOT_FOUND_DATA(HttpStatus.NOT_FOUND, "해당하는 데이터를 찾을 수 없습니다");
 
-    private final HttpStatus status;
+    private final HttpStatus code;
     private final String message;
 }
