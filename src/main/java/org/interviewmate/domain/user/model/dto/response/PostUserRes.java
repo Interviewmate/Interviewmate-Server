@@ -1,4 +1,4 @@
-package org.interviewmate.domain.user.dto;
+package org.interviewmate.domain.user.model.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;

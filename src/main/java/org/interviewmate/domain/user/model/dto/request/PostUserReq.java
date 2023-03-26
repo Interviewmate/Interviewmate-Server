@@ -1,4 +1,4 @@
-package org.interviewmate.domain.user.dto;
+package org.interviewmate.domain.user.model.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
