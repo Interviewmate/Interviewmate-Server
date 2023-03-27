@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class ControllerAdvisor {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler
     protected ResponseDto<ErrorResponseDto> customExceptionHandler(CustomException e) {
-        ErrorResponseDto dto = ErrorResponseDto.of(e.getErrorCode());
+        ErrorResponseDto dto = ErrorResponseDto.of();
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
         return ResponseUtil.ERROR(e.getErrorCode(), dto);
     }
