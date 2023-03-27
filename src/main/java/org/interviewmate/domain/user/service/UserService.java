@@ -35,7 +35,7 @@ public class UserService {
         userRepository.save(user);
 
         // 유저-키워드 연결
-        List<UserKeyword> userKeywords = postUserReqDto.getKeyword().stream()
+        List<UserKeyword> userKeywords = postUserReqDto.getKeywords().stream()
                 .map(keyword -> UserKeyword.builder()
                         .user(user)
                         .keyword( keywordRepository.findByName(keyword))

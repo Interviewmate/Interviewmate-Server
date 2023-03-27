@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,8 +36,8 @@ public class User {
     private String nickName;
 
     @NotNull
-    // todo : 직무를 Enum을 정의하여 사용할지 고민 필요...
-    private String job;
+    @Enumerated(value = EnumType.STRING)
+    private Job job;
 
     @OneToMany(mappedBy = "user")
     private List<UserKeyword> userKeywords = new ArrayList<>();
@@ -43,7 +45,7 @@ public class User {
     // todo: token 및 생성 및 수정 시간, 상태 필드 변수 추가
 
     @Builder
-    public User(String email, String password, String nickName, String job) {
+    public User(String email, String password, String nickName, Job job) {
         this.email = email;
         this.password = password;
         this.nickName = nickName;

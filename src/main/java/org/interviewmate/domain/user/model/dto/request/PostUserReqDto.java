@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.interviewmate.domain.user.model.Job;
 import org.interviewmate.domain.user.model.User;
 
 @Schema(name = "회원 가입 Request", description = "회원 가입에 필요한 유저에 대한 정보")
@@ -20,18 +21,18 @@ public class PostUserReqDto {
     @Schema(description = "닉네임", example = "모아모아뀽")
     private String nickName;
 
-    @Schema(description = "직무", example = "서버 개발자")
+    @Schema(description = "직무", example = "SERVER", allowableValues = {"SERVER, CLIENT, DATA_SCIENTIST, DATA_ANALYST, AI_ENGINEER, AI_RESEARCHER"})
     private String job;
 
     @Schema(description = "키워드", example = "[\"Spring\", \"JPA\", \"Java\"]")
-    private List<String> keyword;
+    private List<String> keywords;
 
     public static User toEntity(PostUserReqDto postUserReqDto) {
         return User.builder()
                 .email(postUserReqDto.getEmail())
                 .password(postUserReqDto.getPassword())
                 .nickName(postUserReqDto.getNickName())
-                .job(postUserReqDto.getJob())
+                .job(Job.valueOf(postUserReqDto.getJob()))
                 .build();
     }
 
