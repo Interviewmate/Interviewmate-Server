@@ -10,7 +10,7 @@ import org.interviewmate.domain.user.model.User;
 @Schema(name = "회원 가입 Request", description = "회원 가입에 필요한 유저에 대한 정보")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostUserReq {
+public class PostUserReqDto {
 
     @Schema(description = "이메일", example = "moa.moa.interview@gmail.com")
     private String email;
@@ -26,12 +26,12 @@ public class PostUserReq {
     @Schema(description = "키워드", example = "[\"Spring\", \"JPA\", \"Java\"]")
     private List<String> keyword;
 
-    public static User toEntity(PostUserReq postUserReq) {
+    public static User toEntity(PostUserReqDto postUserReqDto) {
         return User.builder()
-                .email(postUserReq.getEmail())
-                .password(postUserReq.getPassword())
-                .nickName(postUserReq.getNickName())
-                .job(postUserReq.getJob())
+                .email(postUserReqDto.getEmail())
+                .password(postUserReqDto.getPassword())
+                .nickName(postUserReqDto.getNickName())
+                .job(postUserReqDto.getJob())
                 .build();
     }
 
