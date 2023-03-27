@@ -1,0 +1,39 @@
+package org.interviewmate.domain.userkeyword.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.interviewmate.domain.keyword.model.Keyword;
+import org.interviewmate.domain.user.model.User;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class UserKeyword {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userKeywordId;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "keyword_id")
+    private Keyword keyword;
+
+    @Builder
+    public UserKeyword(User user, Keyword keyword) {
+        this.user = user;
+        this.keyword = keyword;
+    }
+
+}
