@@ -3,14 +3,13 @@ package org.interviewmate.debug;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.interviewmate.debug.baseentity.TestService;
 import org.interviewmate.global.error.ErrorCode;
 import org.interviewmate.global.error.exception.CustomException;
 import org.interviewmate.global.util.response.ResponseCode;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.interviewmate.global.util.response.ResponseUtil;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -20,6 +19,8 @@ import java.util.ArrayList;
 @RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
+
+    private final TestService testService;
 
     @GetMapping("/success")
     public ResponseDto successRepsonseTest() {
@@ -42,5 +43,16 @@ public class TestController {
     @GetMapping("/exception")
     public void exceptionResponseTest() {
         throw new TestException(ErrorCode.NOT_FOUND_DATA);
+    }
+
+    @GetMapping("/entity")
+    public ResponseDto baseEntityTest() {
+        return ResponseUtil.SUCCESS(ResponseCode.SUCCESS, testService.findAll());
+    }
+
+    @PostMapping("/entity")
+    public ResponseDto createBaseEntityTest(@RequestParam("name") String name){
+        testService.create(name);
+        return ResponseUtil.SUCCESS(ResponseCode.SUCCESS, null);
     }
 }
