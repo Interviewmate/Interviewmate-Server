@@ -35,7 +35,7 @@ public class UserApiController {
         }
 
         PostUserResDto postUserResDto = userService.createUser(postUserReqDto);
-        return ResponseUtil.SUCCESS(SUCCESS, postUserResDto);
+        return ResponseUtil.SUCCESS(CREATED, postUserResDto);
 
     }
 
