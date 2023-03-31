@@ -30,6 +30,8 @@ public class UserService {
      */
     public PostUserResDto createUser(PostUserReqDto postUserReqDto) {
 
+        // todo: 이메일, 닉네임 중복 검증, 패스워드 암호화 로직 추가
+
         // 유저 생성
         User user = PostUserReqDto.toEntity(postUserReqDto);
         userRepository.save(user);

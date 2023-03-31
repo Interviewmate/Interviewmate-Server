@@ -28,7 +28,6 @@ public class UserApiController {
 
     @Operation(summary = "회원 가입 API", description = "필요한 정보를 받아 회원 가입 진행")
     @PostMapping("/sign-up")
-    // todo: valid 처리
     public ResponseDto<PostUserResDto> signUp(@RequestBody @Valid PostUserReqDto postUserReqDto) {
 
         if (postUserReqDto.getKeywords().isEmpty()) {
