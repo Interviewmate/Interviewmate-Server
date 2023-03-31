@@ -3,11 +3,13 @@ package org.interviewmate.domain.user.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.interviewmate.global.error.ErrorCode;
+import org.interviewmate.global.error.exception.CustomException;
 
 @Getter
-@AllArgsConstructor
-public class UserException extends RuntimeException {
+public class UserException extends CustomException {
 
-    private ErrorCode errorCode;
+    public UserException(ErrorCode errorCode) {
+        super(errorCode);
+    }
 
 }

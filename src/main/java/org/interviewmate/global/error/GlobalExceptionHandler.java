@@ -23,13 +23,6 @@ public class GlobalExceptionHandler {
         return ResponseUtil.ERROR(e.getErrorCode(), dto);
     }
 
-    @ExceptionHandler({UserException.class})
-    protected ResponseDto<ErrorResponseDto> UserExceptionHandler(UserException e) {
-        ErrorResponseDto dto = ErrorResponseDto.of();
-        log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
-        return ResponseUtil.ERROR(e.getErrorCode(), dto);
-    }
-
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseDto<ErrorResponseDto> handleValidException(MethodArgumentNotValidException e) {
 
