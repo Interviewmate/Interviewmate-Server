@@ -1,7 +1,6 @@
-package org.interviewmate.domain.auth.dto;
+package org.interviewmate.domain.auth.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
 import lombok.Getter;
 
 @Schema(name = "로그인 Request", description = "로그인에 필요한 정보")
