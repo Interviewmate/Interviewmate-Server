@@ -9,15 +9,20 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;
 import org.interviewmate.domain.interview.model.dto.request.InterviewDeleteRequestDto;
+import org.interviewmate.domain.interview.model.dto.request.InterviewFindDailyRequestDto;
 import org.interviewmate.domain.interview.model.dto.request.InterviewFindMonthlyRequestDto;
 import org.interviewmate.domain.interview.model.dto.response.InterviewCreateResponseDto;
+import org.interviewmate.domain.interview.model.dto.response.InterviewFindDailyResponseDto;
 import org.interviewmate.domain.interview.model.dto.response.InterviewFindMonthlyResponseDto;
 import org.interviewmate.domain.interview.service.InterviewServiceImpl;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
+import java.util.List;
 
 import static org.interviewmate.global.util.response.ResponseCode.*;
 
@@ -56,5 +61,16 @@ public class InterviewController {
         InterviewFindMonthlyRequestDto dto = new InterviewFindMonthlyRequestDto(userId, yearMonth);
         InterviewFindMonthlyResponseDto monthlyInterview = interviewService.findMonthlyInterview(dto);
         return ResponseUtil.SUCCESS(SUCCESS, monthlyInterview);
+    }
+
+    @Operation(summary = "일별 면접 조회", description = "Request parameter를 이용해 면접을 생성합니다.", responses = {
+            @ApiResponse(responseCode = "200", description = "일별 면접 조회 성공", content = @Content(schema = @Schema(implementation = InterviewFindDailyResponseDto.class)))
+    })
+    @GetMapping("/day")
+    public ResponseDto findDailyInterview(@RequestParam("userId") Long userId,
+                                          @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        InterviewFindDailyRequestDto dto = new InterviewFindDailyRequestDto(userId, date);
+        List<InterviewFindDailyResponseDto> dailyInterviewList = interviewService.findDailyInterview(dto);
+        return ResponseUtil.SUCCESS(SUCCESS, dailyInterviewList);
     }
 }

@@ -9,8 +9,10 @@ import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;
 import org.interviewmate.domain.interview.model.dto.request.InterviewDeleteRequestDto;
+import org.interviewmate.domain.interview.model.dto.request.InterviewFindDailyRequestDto;
 import org.interviewmate.domain.interview.model.dto.request.InterviewFindMonthlyRequestDto;
 import org.interviewmate.domain.interview.model.dto.response.InterviewCreateResponseDto;
+import org.interviewmate.domain.interview.model.dto.response.InterviewFindDailyResponseDto;
 import org.interviewmate.domain.interview.model.dto.response.InterviewFindMonthlyResponseDto;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.user.model.User;
@@ -19,6 +21,8 @@ import org.interviewmate.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -81,6 +85,22 @@ public class InterviewServiceImpl implements InterviewService{
         }
         responseDto.setCount(responseDto.getDateList().size());
         return responseDto;
+    }
+
+    @Override
+    public List<InterviewFindDailyResponseDto> findDailyInterview(InterviewFindDailyRequestDto dto) {
+        User user = userDebugService.findUser(dto.getUserId());
+
+        LocalDateTime startDateTime = LocalDateTime.of(dto.getDate(), LocalTime.of(0, 0, 0));
+        LocalDateTime endDateTime = LocalDateTime.of(dto.getDate(), LocalTime.of(23, 59, 59));
+        List<Interview> interviewList = interviewRepository.findByUserAndCreatedAtBetween(user, startDateTime, endDateTime);
+
+        List<InterviewFindDailyResponseDto> responseDtoList = new ArrayList<>();
+        for (Interview in : interviewList) {
+            responseDtoList.add(InterviewFindDailyResponseDto.of(in));
+        }
+
+        return responseDtoList;
     }
 
     public long count() {

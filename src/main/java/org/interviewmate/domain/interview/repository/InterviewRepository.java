@@ -11,4 +11,5 @@ import java.util.List;
 public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     Boolean existsByUserAndCreatedAtBetween(User user, LocalDateTime startDateTime, LocalDateTime endDateTime);
+    List<Interview> findByUserAndCreatedAtBetween(User user, LocalDateTime startDateTime, LocalDateTime endDateTime);
 }
