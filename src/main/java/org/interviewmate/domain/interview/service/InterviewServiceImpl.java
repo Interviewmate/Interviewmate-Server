@@ -42,7 +42,7 @@ public class InterviewServiceImpl implements InterviewService{
     @Override
     public InterviewCreateResponseDto createInterview(InterviewCreateRequestDto dto) {
         User user = userDebugService.findUser(dto.getUserId());
-        log.info("userId: {} userEmail: {} userPassword: {}", user.getUserId(), user.getEmail(),user.getPassword());
+//        log.info("userId: {} userEmail: {} userPassword: {}", user.getUserId(), user.getEmail(),user.getPassword());
         BehaviorAnalysis behaviorAnalysis = behaviorAnalysisService.createBehaviorAnalysis();
         Interview interview = Interview.builder()
                 .user(user)
