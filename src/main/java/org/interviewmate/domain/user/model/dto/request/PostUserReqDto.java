@@ -1,5 +1,7 @@
 package org.interviewmate.domain.user.model.dto.request;
 
+import static org.interviewmate.global.util.encrypt.Secret.PASSWORD_KEY;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
 import javax.validation.constraints.Email;
@@ -10,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.interviewmate.domain.user.model.Job;
 import org.interviewmate.domain.user.model.User;
+import org.interviewmate.global.util.encrypt.AES128;
 
 @Schema(name = "회원 가입 Request", description = "회원 가입에 필요한 유저에 대한 정보")
 @Getter
@@ -38,7 +41,7 @@ public class PostUserReqDto {
     public static User toEntity(PostUserReqDto postUserReqDto) {
         return User.builder()
                 .email(postUserReqDto.getEmail())
-                .password(postUserReqDto.getPassword())
+                .password(new AES128(PASSWORD_KEY).encrypt(postUserReqDto.getPassword()))
                 .nickName(postUserReqDto.getNickName())
                 .job(Job.valueOf(postUserReqDto.getJob()))
                 .build();
