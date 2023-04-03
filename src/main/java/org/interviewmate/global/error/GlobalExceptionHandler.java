@@ -1,11 +1,11 @@
 package org.interviewmate.global.error;
 
 import lombok.extern.slf4j.Slf4j;
-import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.global.error.dto.ErrorResponseDto;
 import org.interviewmate.global.error.exception.CustomException;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,4 +43,13 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler({IllegalAccessException.class})
+    protected ResponseDto<ErrorResponseDto> handleIllegalAccessException(IllegalAccessException e){
+        return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, ErrorResponseDto.of(e.getMessage()));
+    }
+
+    @ExceptionHandler({ConversionFailedException.class})
+    protected ResponseDto<ErrorResponseDto> handleConversionFailedException(ConversionFailedException e) {
+        return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, ErrorResponseDto.of(e.getMessage()));
+    }
 }
