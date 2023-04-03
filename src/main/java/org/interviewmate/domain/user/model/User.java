@@ -3,6 +3,7 @@ package org.interviewmate.domain.user.model;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -48,7 +49,11 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private BaseStatus baseStatus;
 
-    // todo: token 추가
+    @Column(columnDefinition = "TEXT")
+    private String refreshToken;
+
+    @Column(columnDefinition = "TEXT")
+    private String accessToken;
 
     @Builder
     public User(String email, String password, String nickName, Job job) {
@@ -61,6 +66,14 @@ public class User extends BaseEntity {
 
     public void setBaseStatus(BaseStatus baseStatus) {
         this.baseStatus = baseStatus;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 
 }
