@@ -4,20 +4,24 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;
 import org.interviewmate.domain.interview.model.dto.request.InterviewDeleteRequestDto;
+import org.interviewmate.domain.interview.model.dto.request.InterviewFindMonthlyRequestDto;
 import org.interviewmate.domain.interview.model.dto.response.InterviewCreateResponseDto;
+import org.interviewmate.domain.interview.model.dto.response.InterviewFindMonthlyResponseDto;
 import org.interviewmate.domain.interview.service.InterviewServiceImpl;
-import org.interviewmate.global.util.response.ResponseCode;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.web.bind.annotation.*;
 
-import static org.interviewmate.global.util.response.ResponseCode.SUCCESS;
+import java.time.YearMonth;
 
+import static org.interviewmate.global.util.response.ResponseCode.*;
+
+@Slf4j
 @Tag(name = "Interview", description = "면접 관련 API")
 @RestController
 @RequestMapping("/interview")
@@ -32,12 +36,25 @@ public class InterviewController {
     @PostMapping("/")
     public ResponseDto createInterview(@RequestBody InterviewCreateRequestDto dto) {
         InterviewCreateResponseDto interview = interviewService.createInterview(dto);
-        return ResponseUtil.SUCCESS(SUCCESS, interview);
+        return ResponseUtil.SUCCESS(CREATED, interview);
     }
 
+    @Operation(summary = "면접 삭제", description = "InterviewDeleteRequestDto를 이용해 면접을 삭제합니다.", responses = {
+            @ApiResponse(responseCode = "200", description = "면접 삭제 성공")
+    })
     @DeleteMapping("/")
     public ResponseDto deleteInterview(@RequestBody InterviewDeleteRequestDto dto) {
         interviewService.deleteInterview(dto);
-        return ResponseUtil.SUCCESS(SUCCESS, null);
+        return ResponseUtil.SUCCESS(DELETED, null);
+    }
+
+    @Operation(summary = "월별 면접 조회", description = "Request parameter를 이용해 면접을 생성합니다.", responses = {
+            @ApiResponse(responseCode = "200", description = "월별 면접 조회 성공", content = @Content(schema = @Schema(implementation = InterviewFindMonthlyResponseDto.class)))
+    })
+    @GetMapping("/month")
+    public ResponseDto findMonthlyInterview(@RequestParam("userId") Long userId, @RequestParam("yearMonth") YearMonth yearMonth) {
+        InterviewFindMonthlyRequestDto dto = new InterviewFindMonthlyRequestDto(userId, yearMonth);
+        InterviewFindMonthlyResponseDto monthlyInterview = interviewService.findMonthlyInterview(dto);
+        return ResponseUtil.SUCCESS(SUCCESS, monthlyInterview);
     }
 }

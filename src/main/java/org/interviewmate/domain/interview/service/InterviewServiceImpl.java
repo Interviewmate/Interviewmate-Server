@@ -9,20 +9,17 @@ import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;
 import org.interviewmate.domain.interview.model.dto.request.InterviewDeleteRequestDto;
-import org.interviewmate.domain.interview.model.dto.request.InterviewGetMonthlyRequestDto;
-import org.interviewmate.domain.interview.model.dto.request.InterviewGetQuestionRequest;
+import org.interviewmate.domain.interview.model.dto.request.InterviewFindMonthlyRequestDto;
 import org.interviewmate.domain.interview.model.dto.response.InterviewCreateResponseDto;
-import org.interviewmate.domain.interview.model.dto.response.InterviewGetQuestionResponse;
+import org.interviewmate.domain.interview.model.dto.response.InterviewFindMonthlyResponseDto;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.service.UserService;
 import org.interviewmate.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.time.*;
 
-import java.time.LocalDate;
-import java.time.YearMonth;
-import java.util.List;
 @Slf4j
 @Service
 @Transactional
@@ -52,6 +49,10 @@ public class InterviewServiceImpl implements InterviewService{
         return InterviewCreateResponseDto.of(save);
     }
 
+    /**
+     * 면접 삭제
+     * @param dto
+     */
     @Override
     public void deleteInterview(InterviewDeleteRequestDto dto) {
         Interview interview = interviewRepository.findById(dto.getInterId()).orElseThrow(() -> new InterviewException(ErrorCode.INTERVIEW_NOT_FOUND));
@@ -59,13 +60,27 @@ public class InterviewServiceImpl implements InterviewService{
         interviewRepository.delete(interview);
     }
 
+    /**
+     * 월별 면접 조회
+     * @param dto
+     * @return 면접 있는 날짜 리스트
+     */
     @Override
-    public void getMonthlyInterview(InterviewGetMonthlyRequestDto dto) {
-        YearMonth month = YearMonth.from(dto.getDate());
-        LocalDate firstDate = month.atDay(1);
-        LocalDate lastDate = month.atEndOfMonth();
+    public InterviewFindMonthlyResponseDto findMonthlyInterview(InterviewFindMonthlyRequestDto dto) {
+        User user = userDebugService.findUser(dto.getUserId());
+        int year = dto.getYearMonth().getYear();
+        int month = dto.getYearMonth().getMonthValue();
+        int lastDay = dto.getYearMonth().lengthOfMonth();
 
-        interviewRepository.findByUserIdAndCreatedAtBetween(firstDate, lastDate);
+        InterviewFindMonthlyResponseDto responseDto = new InterviewFindMonthlyResponseDto();
+        for (int i = 1; i <= lastDay; i++) {
+            if (interviewRepository.existsByUserAndCreatedAtBetween(user, LocalDateTime.of(year, month, i, 0, 0), LocalDateTime.of(year, month, i, 23, 59))) {
+                log.info("add responseDto: {}", LocalDate.of(year, month, i));
+                responseDto.addDateList(i);
+            }
+        }
+        responseDto.setCount(responseDto.getDateList().size());
+        return responseDto;
     }
 
     public long count() {
