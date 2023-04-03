@@ -1,9 +1,12 @@
 package org.interviewmate.domain.user.service;
 
+import static org.interviewmate.global.error.ErrorCode.EXIST_NICKNAME;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.keyword.repository.KeywordRepository;
+import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.model.dto.request.PostUserReqDto;
 import org.interviewmate.domain.user.model.dto.response.PostUserResDto;
@@ -30,7 +33,10 @@ public class UserService {
      */
     public PostUserResDto createUser(PostUserReqDto postUserReqDto) {
 
-        // todo: 이메일, 닉네임 중복 검증, 패스워드 암호화 로직 추가
+        // 닉네임 중복 검사
+        if(!userRepository.findByNickName(postUserReqDto.getNickName()).isEmpty()) {
+            throw new UserException(EXIST_NICKNAME);
+        }
 
         // 유저 생성
         User user = PostUserReqDto.toEntity(postUserReqDto);
