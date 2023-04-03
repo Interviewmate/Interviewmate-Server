@@ -11,6 +11,7 @@ import lombok.NonNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InterviewDeleteRequestDto {
+    @Schema(description = "interview id")
     @NonNull
     private Long interId;
 }
