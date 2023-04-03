@@ -3,6 +3,8 @@ package org.interviewmate.domain.interview.model.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.interviewmate.domain.interview.model.Interview;
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 @Schema(description = "월별 면접 조회 response dto")
@@ -11,11 +13,11 @@ import java.time.LocalTime;
 @Builder(access = AccessLevel.PROTECTED)
 public class InterviewFindDailyResponseDto {
     @Schema(description = "interview id",example = "3")
-    @NonNull
+    @NotNull
     private Long interviewId;
 
     @Schema(description = "시간", example = "20:00:00")
-    @NonNull
+    @NotNull
     private LocalTime time;
 
     public static InterviewFindDailyResponseDto of(Interview interview) {

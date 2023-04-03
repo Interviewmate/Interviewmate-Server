@@ -4,18 +4,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.interviewmate.domain.interview.model.Interview;
 
+import javax.validation.constraints.NotNull;
+
 @Schema(description = "면접 생성 response dto")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class InterviewCreateResponseDto {
     @Schema(description = "사용자 id")
-    @NonNull
+    @NotNull
     private Long userId;
     @Schema(description = "면접 id")
-    @NonNull
+    @NotNull
     private Long interviewId;
     @Schema(description = "행동 분석 id")
-    @NonNull
+    @NotNull
     private Long behaviorId;
 
     @Builder

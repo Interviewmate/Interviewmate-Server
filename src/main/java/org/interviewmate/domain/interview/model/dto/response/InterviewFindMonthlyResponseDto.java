@@ -3,8 +3,8 @@ package org.interviewmate.domain.interview.model.dto.response;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NonNull;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,11 +13,11 @@ import java.util.List;
 @AllArgsConstructor
 public class InterviewFindMonthlyResponseDto {
     @Schema(description = "list size (date 개수)",example = "3")
-    @NonNull
+    @NotNull
     private Long count;
 
     @Schema(description = "면접 기록이 있는 날짜 list", example = "[3,4,10]")
-    @NonNull
+    @NotNull
     private List<Integer> dateList;
 
     public InterviewFindMonthlyResponseDto() {

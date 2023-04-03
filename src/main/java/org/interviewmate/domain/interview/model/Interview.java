@@ -19,10 +19,6 @@ public class Interview extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long interId;
 
-    //base entity에서 생성일과 수정일 자동으로 생성해줘서 뺐음
-//    private LocalDate date;
-//    private LocalTime time;
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
