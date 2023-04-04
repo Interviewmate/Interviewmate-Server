@@ -2,8 +2,10 @@ package org.interviewmate.domain.keyword.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,7 +30,7 @@ public class Keyword {
     @Column(unique = true)
     private String name;
 
-    @OneToMany(mappedBy = "keyword")
+    @OneToMany(mappedBy = "keyword", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserKeyword> userKeywords = new ArrayList<>();
 
     @Builder
