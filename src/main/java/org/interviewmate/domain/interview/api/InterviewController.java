@@ -29,7 +29,7 @@ import static org.interviewmate.global.util.response.ResponseCode.*;
 @Slf4j
 @Tag(name = "Interview", description = "면접 관련 API")
 @RestController
-@RequestMapping("/interview")
+@RequestMapping("/interviews")
 @RequiredArgsConstructor
 public class InterviewController {
 
