@@ -19,11 +19,11 @@ public class Interview extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long interId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "behavior_analysis_id")
     private BehaviorAnalysis behaviorAnalysis;
 
