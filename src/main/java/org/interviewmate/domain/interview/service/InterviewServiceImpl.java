@@ -42,7 +42,6 @@ public class InterviewServiceImpl implements InterviewService{
     @Override
     public InterviewCreateResponseDto createInterview(InterviewCreateRequestDto dto) {
         User user = userDebugService.findUser(dto.getUserId());
-//        log.info("userId: {} userEmail: {} userPassword: {}", user.getUserId(), user.getEmail(),user.getPassword());
         BehaviorAnalysis behaviorAnalysis = behaviorAnalysisService.createBehaviorAnalysis();
         Interview interview = Interview.builder()
                 .user(user)
@@ -78,7 +77,7 @@ public class InterviewServiceImpl implements InterviewService{
 
         InterviewFindMonthlyResponseDto responseDto = new InterviewFindMonthlyResponseDto();
         for (int i = 1; i <= lastDay; i++) {
-            if (interviewRepository.existsByUserAndCreatedAtBetween(user, LocalDateTime.of(year, month, i, 0, 0), LocalDateTime.of(year, month, i, 23, 59))) {
+            if (interviewRepository.existsByUserAndCreatedAtBetween(user, LocalDateTime.of(year, month, i, 0, 0,0), LocalDateTime.of(year, month, i, 23, 59,59))) {
                 log.info("add responseDto: {}", LocalDate.of(year, month, i));
                 responseDto.addDateList(i);
             }
