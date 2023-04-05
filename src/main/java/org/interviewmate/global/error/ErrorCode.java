@@ -27,6 +27,7 @@ public enum ErrorCode {
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "잘못된 비밀번호 입니다."),
 
     /* UNAUTHORIZED : 401 */
+    INVALID_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "유효하지 않은 인증입니다."),
 
     /* FORBIDDEN : 403 */
 

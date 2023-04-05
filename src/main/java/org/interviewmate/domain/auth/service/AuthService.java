@@ -12,6 +12,7 @@ import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.global.util.encrypt.password.AES128;
+import org.interviewmate.global.util.encrypt.jwt.service.JwtService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     public LoginRes login(LoginReq loginReq) {
 
@@ -37,7 +39,10 @@ public class AuthService {
             throw new UserException(WRONG_PASSWORD);
         }
 
-        return LoginRes.of(user);
+        // 토큰 발급
+        String accessToken = jwtService.createAccessToken(user.getEmail(), user.getRoles());
+
+        return LoginRes.of(user, accessToken);
 
     }
 

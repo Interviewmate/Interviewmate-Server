@@ -31,12 +31,14 @@ public class User extends BaseEntity {
     private Long userId;
 
     @NotNull
+    @Column(unique = true)
     private String email;
 
     @NotNull
     private String password;
 
     @NotNull
+    @Column(unique = true)
     private String nickName;
 
     @NotNull
@@ -49,11 +51,8 @@ public class User extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private BaseStatus baseStatus;
 
-    @Column(columnDefinition = "TEXT")
-    private String refreshToken;
-
-    @Column(columnDefinition = "TEXT")
-    private String accessToken;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Authority> roles = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String nickName, Job job) {
@@ -68,12 +67,10 @@ public class User extends BaseEntity {
         this.baseStatus = baseStatus;
     }
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
-
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
+    public void setRoles(List<Authority> roles) {
+        this.roles = roles;
+        roles.forEach(role -> role.setUser(this));
     }
 
 }
+

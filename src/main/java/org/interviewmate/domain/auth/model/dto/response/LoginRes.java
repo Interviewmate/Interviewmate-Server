@@ -16,9 +16,10 @@ public class LoginRes {
 
     private String accessToken;
 
-    public static LoginRes of(User user) {
+    public static LoginRes of(User user, String accessToken) {
         return LoginRes.builder()
                 .userId(user.getUserId())
+                .accessToken(accessToken)
                 .build();
     }
 

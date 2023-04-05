@@ -2,11 +2,13 @@ package org.interviewmate.domain.user.service;
 
 import static org.interviewmate.global.error.ErrorCode.EXIST_NICKNAME;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.keyword.repository.KeywordRepository;
 import org.interviewmate.domain.user.exception.UserException;
+import org.interviewmate.domain.user.model.Authority;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.model.dto.request.PostUserReqDto;
 import org.interviewmate.domain.user.model.dto.response.PostUserResDto;
@@ -40,6 +42,7 @@ public class UserService {
 
         // 유저 생성
         User user = PostUserReqDto.toEntity(postUserReqDto);
+        user.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
         userRepository.save(user);
 
         // 유저-키워드 연결

@@ -36,6 +36,8 @@ public class AuthApiController {
         return ResponseUtil.SUCCESS(SUCCESS, authService.login(loginReq));
     }
 
+    // todo: 토큰 재발급 API
+
     @Operation(summary = "메일 인증 코드 발송 API", description = "회원 가입 시 이메일 인증 코드 발송")
     @Parameter(name = "toEmail", description = "이메일", example = "parkrootseok@gmail.com")
     @GetMapping("/email")
