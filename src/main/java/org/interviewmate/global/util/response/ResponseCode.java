@@ -18,6 +18,7 @@ public enum ResponseCode {
     SUCCESS(HttpStatus.OK, "요청이 완료 되었습니다."),
     CREATED(HttpStatus.CREATED, "생성이 완료되었습니다."),
     NO_CONTENT(HttpStatus.NO_CONTENT, "요청에 대한 정보가 없습니다."),
+    DELETED(HttpStatus.OK, "삭제가 완료되었습니다."),
     FAILURE_ALREADY_REPORTED(HttpStatus.ALREADY_REPORTED, "에러는 아니지만 실패");
 
     private final HttpStatus code;

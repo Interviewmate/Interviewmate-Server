@@ -52,7 +52,7 @@ public class AuthApiController {
             @Parameter(name = "code", description = "인증 코드", example = "53085")
     })
     @GetMapping("/authCode")
-    private ResponseDto<String> verifyAuthenticationCode(@RequestParam @Email String email, @RequestParam String code) {
+    public ResponseDto<String> verifyAuthenticationCode(@RequestParam @Email String email, @RequestParam String code) {
 
         if(emailService.verifyEmailCode(email, code)) {
             return ResponseUtil.SUCCESS(SUCCESS, "인증 완료.");
