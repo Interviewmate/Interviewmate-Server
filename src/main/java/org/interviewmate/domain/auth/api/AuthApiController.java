@@ -8,8 +8,8 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
-import org.interviewmate.domain.auth.dto.request.LoginReq;
-import org.interviewmate.domain.auth.dto.reponse.LoginRes;
+import org.interviewmate.domain.auth.model.dto.request.LoginReq;
+import org.interviewmate.domain.auth.model.dto.response.LoginRes;
 import org.interviewmate.domain.auth.service.AuthService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
@@ -32,8 +32,8 @@ public class AuthApiController {
 
     @Operation(summary = "로그인 API", description = "필요한 정보를 받아 로그인 진행")
     @PostMapping("/login")
-    public ResponseDto<LoginRes> signUp(@RequestBody LoginReq loginReq) {
-        return ResponseUtil.SUCCESS(SUCCESS, authService.signUp(loginReq));
+    public ResponseDto<LoginRes> login(@RequestBody LoginReq loginReq) {
+        return ResponseUtil.SUCCESS(SUCCESS, authService.login(loginReq));
     }
 
     @Operation(summary = "메일 인증 코드 발송 API", description = "회원 가입 시 이메일 인증 코드 발송")
