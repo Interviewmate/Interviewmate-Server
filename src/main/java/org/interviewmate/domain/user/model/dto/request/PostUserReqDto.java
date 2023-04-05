@@ -12,7 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.interviewmate.domain.user.model.Job;
 import org.interviewmate.domain.user.model.User;
-import org.interviewmate.global.util.encrypt.AES128;
+import org.interviewmate.global.util.encrypt.password.AES128;
 
 @Schema(name = "회원 가입 Request", description = "회원 가입에 필요한 유저에 대한 정보")
 @Getter

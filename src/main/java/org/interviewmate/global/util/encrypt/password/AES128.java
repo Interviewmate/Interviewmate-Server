@@ -1,4 +1,4 @@
-package org.interviewmate.global.util.encrypt;
+package org.interviewmate.global.util.encrypt.password;
 
 import java.security.Key;
 import javax.crypto.Cipher;
