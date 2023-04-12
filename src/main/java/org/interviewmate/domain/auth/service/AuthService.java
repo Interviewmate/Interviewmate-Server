@@ -1,8 +1,6 @@
 package org.interviewmate.domain.auth.service;
 
 import static org.interviewmate.global.error.ErrorCode.FAIL_TO_LOGIN;
-import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_USER;
-import static org.interviewmate.global.error.ErrorCode.WRONG_PASSWORD;
 import static org.interviewmate.global.util.encrypt.Secret.PASSWORD_KEY;
 import static org.interviewmate.global.util.encrypt.jwt.model.TokenType.*;
 
@@ -13,7 +11,6 @@ import org.interviewmate.domain.auth.model.dto.request.LoginReq;
 import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
-import org.interviewmate.global.util.encrypt.jwt.model.TokenType;
 import org.interviewmate.global.util.encrypt.password.AES128;
 import org.interviewmate.global.util.encrypt.jwt.service.JwtService;
 import org.springframework.stereotype.Service;
