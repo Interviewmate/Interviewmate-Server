@@ -1,18 +1,19 @@
 package org.interviewmate.global.util.encrypt.jwt.service;
 
+import static org.interviewmate.global.error.ErrorCode.FAIL_TO_CREATE;
 import static org.interviewmate.global.util.encrypt.Secret.JWT_KEY;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
-import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -20,6 +21,9 @@ import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.user.model.Authority;
+import org.interviewmate.global.util.encrypt.jwt.model.Subject;
+import org.interviewmate.global.util.encrypt.jwt.model.TokenType;
+import org.interviewmate.global.util.encrypt.security.exception.SecurityException;
 import org.interviewmate.global.util.encrypt.security.service.CustomUserDetailsService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,9 +35,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class JwtService {
 
-    private final long ACCESS_TOKEN_EXPIRATION_TIME = Duration.ofMinutes(30).toMillis();   // 30분
-    private final long REFRESH_TOKEN_EXPIRATION_TIME = Duration.ofDays(7).toMillis();   // 1주
-
+    private final ObjectMapper objectMapper;
     private final CustomUserDetailsService userDetailsService;
 
     private Key secretKey;
@@ -47,62 +49,59 @@ public class JwtService {
     }
 
     /**
-     * 공통 요소를 가진 Token 생성
-     * @param expirationTime
-     * @return
+     * Token 생성
      */
-    private JwtBuilder createTokenWithCommonComponent(long expirationTime) {
+    public String createToken(String email, List<Authority> roles, TokenType type) {
 
-        Date now = new Date();
-        Date expirationDate = new Date(now.getTime() + expirationTime);
-        log.info("Expiration Date");
-        log.info("-> " + expirationDate);
+        log.info("-----Start To Create Token-----");
+        log.info("Type");
+        log.info("-> " + type.getName());
+
+        String token = Jwts.builder()
+                .setClaims(getClaims(email, type, roles))
+                .setIssuedAt(new Date())
+                .setExpiration(getExpirationDate(type.getExpirationTime()))
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
 
         log.info("-----Complete To Create Token-----");
 
-        return Jwts.builder()
-                .setIssuedAt(now)
-                .setExpiration(expirationDate)
-                .signWith(secretKey, SignatureAlgorithm.HS256);
-    }
-
-    /**
-     * Access Token 생성
-     */
-    public String createAccessToken(String email, List<Authority> roles) {
-
-        log.info("-----Start To Create Access Token-----");
-        log.info("Email Information");
-        log.info("-> " + email);
-        log.info("Role Information" );
-        roles.forEach(role -> log.info("-> " + role.getName()));
-        
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", roles);
-
-        return createTokenWithCommonComponent(ACCESS_TOKEN_EXPIRATION_TIME)
-                .setClaims(claims)
-                .compact();
+        return token;
 
     }
 
-    /**
-     * Refresh Token 생성
-     */
-    public String createRefreshToken(String email, List<Authority> roles) {
+    private Claims getClaims(String email, TokenType type, List<Authority> roles) {
 
-        log.info("-----Start To Create Refresh Token-----");
         log.info("Email Information");
         log.info("-> " + email);
         log.info("Role Information" );
         roles.forEach(role -> log.info("-> " + role.getName()));
 
-        Claims claims = Jwts.claims().setSubject(email);
-        claims.put("roles", roles);
+        Claims claims = null;
+        Subject subject = Subject.builder()
+                .email(email)
+                .type(type).build();
 
-        return createTokenWithCommonComponent(REFRESH_TOKEN_EXPIRATION_TIME)
-                .setClaims(claims)
-                .compact();
+        try {
+            claims = Jwts.claims().setSubject(objectMapper.writeValueAsString(subject));
+            claims.put("roles", roles);
+        } catch (JsonProcessingException e) {
+            throw new SecurityException(FAIL_TO_CREATE);
+        }
+        return claims;
+    }
+
+
+    private static Date getExpirationDate(long expirationTime) {
+
+        Date now = new Date();
+        Date expirationDate = new Date(now.getTime() + expirationTime);
+
+        log.info("Expiration Date");
+        log.info("-> " + expirationDate);
+
+        return expirationDate;
+
     }
 
     /**

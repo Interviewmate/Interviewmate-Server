@@ -54,6 +54,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Authority> roles = new ArrayList<>();
 
+    @Column(columnDefinition = "TEXT")
+    private String refreshToken;
+
     @Builder
     public User(String email, String password, String nickName, Job job) {
         this.email = email;
@@ -72,5 +75,8 @@ public class User extends BaseEntity {
         roles.forEach(role -> role.setUser(this));
     }
 
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }
 
