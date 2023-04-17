@@ -70,10 +70,10 @@ public class AuthApiController {
     public ResponseDto<String> verifyAuthenticationCode(@RequestParam @Email String email, @RequestParam String code) {
 
         if(emailService.verifyEmailCode(email, code)) {
-            return ResponseUtil.SUCCESS(SUCCESS, "인증 완료.");
+            return ResponseUtil.SUCCESS(SUCCESS, "인증 완료");
         }
 
-        return ResponseUtil.SUCCESS(SUCCESS, "인증 실패.");
+        return ResponseUtil.FAILURE(SUCCESS, "인증 실패");
 
     }
 
