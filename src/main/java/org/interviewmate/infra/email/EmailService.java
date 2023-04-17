@@ -29,7 +29,7 @@ public class EmailService {
 
     public String sendEmail(String toEmail) {
 
-        User user = userRepository.findByEmail(toEmail).get();
+        User user = userRepository.findByEmail(toEmail).orElse(null);
 
         if(Objects.nonNull(user)) {
             throw new UserException(EXIST_EMAIL);
