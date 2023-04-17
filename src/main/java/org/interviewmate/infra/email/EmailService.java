@@ -1,9 +1,16 @@
 package org.interviewmate.infra.email;
 
+import static org.interviewmate.global.error.ErrorCode.EXIST_EMAIL;
+import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_USER;
+
+import java.util.Objects;
 import java.util.Random;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.interviewmate.domain.user.exception.UserException;
+import org.interviewmate.domain.user.model.User;
+import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.infra.redis.RedisService;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,11 +25,18 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final RedisService redisService;
+    private final UserRepository userRepository;
 
     public String sendEmail(String toEmail) {
 
-       if (!redisService.existData(toEmail)) {
-           redisService.deleteData(toEmail);
+        User user = userRepository.findByEmail(toEmail).get();
+
+        if(Objects.nonNull(user)) {
+            throw new UserException(EXIST_EMAIL);
+        }
+
+       if (redisService.existData(user.getEmail())) {
+           redisService.deleteData(user.getEmail());
        }
 
        String code = createAuthCode();
@@ -58,11 +72,10 @@ public class EmailService {
     }
 
     public Boolean verifyEmailCode(String email, String code) {
+
         String findCode = redisService.getData(email);
-        if (findCode == null) {
-            return false;
-        }
-        return findCode.equals(code);
+        return Objects.equals(findCode, code);
+
     }
 
 }

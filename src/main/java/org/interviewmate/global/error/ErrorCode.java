@@ -29,6 +29,7 @@ public enum ErrorCode {
     //user error
     EMPTY_KEYWORD(HttpStatus.BAD_REQUEST, "키워드를 입력해주세요."),
     EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "중복된 닉네임입니다."),
+    EXIST_EMAIL(HttpStatus.BAD_REQUEST, "중복된 이메일입니다."),
 
     /* UNAUTHORIZED : 401 */
     INVALID_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "유효하지 않은 인증입니다."),
