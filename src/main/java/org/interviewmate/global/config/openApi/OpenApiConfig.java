@@ -1,7 +1,6 @@
 package org.interviewmate.global.config.openApi;
 
 
-import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -14,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class        OpenApiConfig {
+public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {
@@ -27,18 +26,8 @@ public class        OpenApiConfig {
         localServer.setDescription("local");
         localServer.setUrl("http://localhost:8082");
 
-        SecurityScheme securityScheme = new SecurityScheme()
-                .name("Authorization")
-                .type(SecurityScheme.Type.HTTP)
-                .in(SecurityScheme.In.HEADER)
-                .bearerFormat("JWT")
-                .scheme("bearer");
-
-        SecurityRequirement securityRequirement = new SecurityRequirement().addList("Authorization");
 
         return new OpenAPI()
-                .components(new Components().addSecuritySchemes("Authorization", securityScheme))
-                .security(Arrays.asList(securityRequirement))
                 .info(getInfo())
                 .servers(Arrays.asList(devServer, localServer));
 
@@ -69,7 +58,7 @@ public class        OpenApiConfig {
                 .description("InterviewMate API DOCS");
     }
 
-    public OpenApiCustomiser buildSecurityOpenApi() {
+    private OpenApiCustomiser buildSecurityOpenApi() {
         SecurityScheme securityScheme = new SecurityScheme()
                 .name("Authorization")
                 .type(SecurityScheme.Type.HTTP)

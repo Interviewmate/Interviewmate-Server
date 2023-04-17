@@ -6,11 +6,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.auth.model.dto.request.LoginReq;
+import org.interviewmate.domain.auth.model.dto.request.ReissueAccessTokenReq;
 import org.interviewmate.domain.auth.model.dto.response.LoginRes;
-import org.interviewmate.domain.auth.service.AuthService;
+import org.interviewmate.domain.auth.model.dto.response.ReissueAccessTokenRes;
+import org.interviewmate.domain.user.model.User;
+import org.interviewmate.domain.user.service.UserService;
+import org.interviewmate.global.util.encrypt.jwt.service.JwtService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.interviewmate.infra.email.EmailService;
@@ -28,15 +33,23 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthApiController {
 
     private final EmailService emailService;
-    private final AuthService authService;
+    private final UserService userService;
+    private final JwtService jwtService;
 
     @Operation(summary = "로그인 API", description = "필요한 정보를 받아 로그인 진행")
     @PostMapping("/login")
-    public ResponseDto<LoginRes> login(@RequestBody LoginReq loginReq) {
-        return ResponseUtil.SUCCESS(SUCCESS, authService.login(loginReq));
+    public ResponseDto<LoginRes> login(@RequestBody @Valid LoginReq loginReq) {
+
+        User user = userService.login(loginReq);
+        return ResponseUtil.SUCCESS(SUCCESS, jwtService.issueTokenByLogin(user));
+
     }
 
-    // todo: 토큰 재발급 API
+    @Operation(summary = "어세스 토큰 재발급 API", description = "어세스 토큰 만료시 재발급")
+    @PostMapping("/reissue")
+    public ResponseDto<ReissueAccessTokenRes> reissueAccessToken(@RequestBody ReissueAccessTokenReq reissueAccessTokenReq) {
+        return ResponseUtil.SUCCESS(SUCCESS, jwtService.reissueAccessToken(reissueAccessTokenReq));
+    }
 
     @Operation(summary = "메일 인증 코드 발송 API", description = "회원 가입 시 이메일 인증 코드 발송")
     @Parameter(name = "toEmail", description = "이메일", example = "parkrootseok@gmail.com")

@@ -1,7 +1,12 @@
 package org.interviewmate.global.util.encrypt.jwt.service;
 
+import static org.interviewmate.global.error.ErrorCode.EXPIRED_TOKEN;
 import static org.interviewmate.global.error.ErrorCode.FAIL_TO_CREATE;
+import static org.interviewmate.global.error.ErrorCode.FAIL_TO_LOAD_SUBJECT;
+import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_USER;
 import static org.interviewmate.global.util.encrypt.Secret.JWT_KEY;
+import static org.interviewmate.global.util.encrypt.jwt.model.TokenType.ACCESS_TOKEN;
+import static org.interviewmate.global.util.encrypt.jwt.model.TokenType.REFRESH_TOKEN;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,68 +21,99 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.interviewmate.domain.auth.model.dto.request.ReissueAccessTokenReq;
+import org.interviewmate.domain.auth.model.dto.response.LoginRes;
+import org.interviewmate.domain.auth.model.dto.response.ReissueAccessTokenRes;
+import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.Authority;
+import org.interviewmate.domain.user.model.User;
+import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.global.util.encrypt.jwt.model.Subject;
 import org.interviewmate.global.util.encrypt.jwt.model.TokenType;
 import org.interviewmate.global.util.encrypt.security.exception.SecurityException;
 import org.interviewmate.global.util.encrypt.security.service.CustomUserDetailsService;
+import org.interviewmate.infra.redis.RedisService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class JwtService {
 
+    private final RedisService redisService;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService userDetailsService;
+    private final UserRepository userRepository;
 
     private Key secretKey;
 
-    /**
-     *  salt를 사용하여 한번 더 암호화 진행
-     */
     @PostConstruct
     protected void init() {
         secretKey = Keys.hmacShaKeyFor(JWT_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
-     * Token 생성
+     * 로그인 시 토큰 발행
      */
-    public String createToken(String email, List<Authority> roles, TokenType type) {
+    public LoginRes issueTokenByLogin(User user) {
 
         log.info("-----Start To Create Token-----");
-        log.info("Type");
-        log.info("-> " + type.getName());
 
-        String token = Jwts.builder()
-                .setClaims(getClaims(email, type, roles))
-                .setIssuedAt(new Date())
-                .setExpiration(getExpirationDate(type.getExpirationTime()))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
-                .compact();
+        String email = user.getEmail();
+        List<Authority> roles = user.getRoles();
+
+        String accessToken = issueToken(email, roles, ACCESS_TOKEN);
+
+        if (Objects.isNull(redisService.getData(email))) {
+            String refreshToken = issueToken(email, roles, REFRESH_TOKEN);
+            redisService.setDataExpire(email, refreshToken, REFRESH_TOKEN.getExpirationTime());
+        }
 
         log.info("-----Complete To Create Token-----");
 
-        return token;
+        return LoginRes.of(user, accessToken);
 
     }
 
-    private Claims getClaims(String email, TokenType type, List<Authority> roles) {
+    /**
+     * 토큰 발행
+     * Token Type은 매개 변수를 통해 받아 지정
+     */
+    private String issueToken(String email, List<Authority> roles, TokenType type) {
 
+        Date now = new Date();
+        Claims claims = setClaims(email, type, roles);
+        Date expirationDate = getExpirationDate(now, type.getExpirationTime());
+
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(expirationDate)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .compact();
+
+    }
+
+    private Claims setClaims(String email, TokenType type, List<Authority> roles) {
+
+        log.info("Type");
+        log.info("-> " + type.getName());
         log.info("Email Information");
         log.info("-> " + email);
         log.info("Role Information" );
         roles.forEach(role -> log.info("-> " + role.getName()));
 
-        Claims claims = null;
+        Claims claims;
         Subject subject = Subject.builder()
                 .email(email)
                 .type(type).build();
@@ -88,13 +124,14 @@ public class JwtService {
         } catch (JsonProcessingException e) {
             throw new SecurityException(FAIL_TO_CREATE);
         }
+
         return claims;
+
     }
 
 
-    private static Date getExpirationDate(long expirationTime) {
+    private Date getExpirationDate(Date now, long expirationTime) {
 
-        Date now = new Date();
         Date expirationDate = new Date(now.getTime() + expirationTime);
 
         log.info("Expiration Date");
@@ -105,42 +142,68 @@ public class JwtService {
     }
 
     /**
-     * Token에서 이메일 정보 추출
+     * 토큰 재발급 (Refresh Token 검증 후)
      */
-    public String getEmail(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(secretKey)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+    public ReissueAccessTokenRes reissueAccessToken(ReissueAccessTokenReq reissueAccessTokenReq) {
+
+        User finduser = userRepository
+                .findByEmail(reissueAccessTokenReq.getEmail())
+                .orElseThrow(() -> new UserException(NOT_EXIST_USER));
+
+        String findToken = redisService.getData(finduser.getEmail());
+
+        if (Objects.isNull(findToken)) {
+            throw new SecurityException(EXPIRED_TOKEN);
+        }
+
+        return ReissueAccessTokenRes.of(
+                finduser,
+                issueToken(finduser.getEmail(), finduser.getRoles(), ACCESS_TOKEN)
+        );
+
     }
 
     /**
-     * Token에서 권한 정보 추출
+     * 토큰 가져오기
      */
-    public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getEmail(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
-
-    /**
-     * 토큰 인증 (Authorization 헤더 사용)
-     */
-    public String resolveToken(HttpServletRequest request) {
+    public String getJwtFromReqHeader(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
 
+
     /**
-     * Token 추출
+     * Subject 추출
      */
-    public Jws<Claims> parseJwt(String token) {
-        Jws<Claims> claims = Jwts.parserBuilder()
+    public Subject getSubject(String token) {
+
+        String subject = getClaims(token).getBody().getSubject();
+
+        try {
+            return objectMapper.readValue(subject, Subject.class);
+        } catch (JsonProcessingException e) {
+            throw new SecurityException(FAIL_TO_LOAD_SUBJECT);
+        }
+
+    }
+
+    /**
+     *  payload 추출
+     */
+    private Jws<Claims> getClaims(String token) {
+        return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token.substring(token.indexOf(" ")).trim());
-        return claims;
     }
+
+    /**
+     * Authentication 추출
+     */
+    public Authentication getAuthentication(String token) {
+        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getSubject(token).getEmail());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
 
     /**
      * 토큰 검증
@@ -148,7 +211,7 @@ public class JwtService {
     public boolean validateToken(String token) {
 
         try {
-            Jws<Claims> claims = parseJwt(token);
+            getClaims(token);
             return true;
         }  catch (ExpiredJwtException exception) {
             log.error("만료된 토큰입니다.");

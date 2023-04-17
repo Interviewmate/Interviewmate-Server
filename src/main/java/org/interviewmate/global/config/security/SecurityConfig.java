@@ -6,7 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.interviewmate.global.util.encrypt.jwt.service.JwtAuthenticationFilter;
+import org.interviewmate.global.util.encrypt.jwt.controller.JwtAuthenticationFilter;
 import org.interviewmate.global.util.encrypt.jwt.service.JwtService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
