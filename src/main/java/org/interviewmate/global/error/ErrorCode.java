@@ -20,13 +20,18 @@ public enum ErrorCode {
     //common error
     NOT_FOUND_DATA(HttpStatus.NOT_FOUND, "해당하는 데이터를 찾을 수 없습니다."),
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청입니다." ),
+    FAIL_TO_CREATE(HttpStatus.BAD_REQUEST,"토큰을 생성할 수 없습니다."),
+    FAIL_TO_LOGIN(HttpStatus.BAD_REQUEST, "아이디 또는 비밀번호를 확인하세요."),
+    FAIL_TO_LOAD_SUBJECT(HttpStatus.BAD_REQUEST, "토큰에 대한 정보를 불러올 수 없습니다."),
+    INVALID_TOKEN_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰 타입입니다."),
+    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
 
     //user error
     EMPTY_KEYWORD(HttpStatus.BAD_REQUEST, "키워드를 입력해주세요."),
-    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "중복되는 닉네임입니다."),
-    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "잘못된 비밀번호 입니다."),
+    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "중복된 닉네임입니다."),
 
     /* UNAUTHORIZED : 401 */
+    INVALID_AUTHENTICATION(HttpStatus.UNAUTHORIZED, "유효하지 않은 인증입니다."),
 
     /* FORBIDDEN : 403 */
 

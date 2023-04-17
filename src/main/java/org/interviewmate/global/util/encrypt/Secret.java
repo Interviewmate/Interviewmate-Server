@@ -1,5 +1,11 @@
 package org.interviewmate.global.util.encrypt;
 
+import org.springframework.beans.factory.annotation.Value;
+
 public class Secret {
-    public static String PASSWORD_KEY = "o9pqYVC9-F8_.PEzEiw!L9F6.AYj9jcfVJ*_i.ifXYnyE68kix@Q2dL6rw*bV-rpdZYwcqZG-jPF-fw3CiJyKsfZ778ks-*jnZn";
+
+    public static String PASSWORD_KEY = "WmZq4t6w9z$C&F)J";
+    public static String JWT_KEY = "A?D*G-KaPdSgVkYp3s6v9y$B&E)H+MbQ";
+
 }
+
