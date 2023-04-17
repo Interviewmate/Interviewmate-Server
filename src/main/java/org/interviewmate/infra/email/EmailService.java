@@ -35,8 +35,8 @@ public class EmailService {
             throw new UserException(EXIST_EMAIL);
         }
 
-       if (redisService.existData(user.getEmail())) {
-           redisService.deleteData(user.getEmail());
+       if (redisService.existData(toEmail)) {
+           redisService.deleteData(toEmail);
        }
 
        String code = createAuthCode();
@@ -44,6 +44,7 @@ public class EmailService {
        try {
            MimeMessage message = createEmailForm(toEmail, code);
            mailSender.send(message);
+           redisService.setDataExpire(toEmail, code, 60 * 5L);
        } catch (MessagingException e) {
            e.printStackTrace();
        }
@@ -64,8 +65,6 @@ public class EmailService {
         helper.setTo(toEmail);
         helper.setSubject(EMAIL_TITLE);
         helper.setText(EMAIL_CONTENT + authCode, true);
-
-        redisService.setDataExpire(toEmail, authCode, 60 * 5L);
 
         return message;
 
