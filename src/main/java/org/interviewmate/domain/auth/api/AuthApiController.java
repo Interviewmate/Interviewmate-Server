@@ -36,6 +36,14 @@ public class AuthApiController {
     private final UserService userService;
     private final JwtService jwtService;
 
+    @Operation(summary = "닉네임 중복 검사 API", description = "사용하고 싶은 닉네임을 받아 중복 검사")
+    @GetMapping("/check")
+    @Parameter(name = "nickName", example = "모아모아뀽")
+    public ResponseDto<String> checkNickname(@RequestParam String nickName) {
+        return ResponseUtil.SUCCESS(SUCCESS, userService.checkNickname(nickName));
+    }
+
+
     @Operation(summary = "로그인 API", description = "필요한 정보를 받아 로그인 진행")
     @PostMapping("/login")
     public ResponseDto<LoginRes> login(@RequestBody @Valid LoginReq loginReq) {
