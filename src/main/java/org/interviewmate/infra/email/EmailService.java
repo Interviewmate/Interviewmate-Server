@@ -1,9 +1,15 @@
 package org.interviewmate.infra.email;
 
+import static org.interviewmate.global.error.ErrorCode.DUPLICATE_EMAIL;
+
+import java.util.Objects;
 import java.util.Random;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.interviewmate.domain.user.exception.UserException;
+import org.interviewmate.domain.user.model.User;
+import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.infra.redis.RedisService;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -18,10 +24,17 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final RedisService redisService;
+    private final UserRepository userRepository;
 
     public String sendEmail(String toEmail) {
 
-       if (!redisService.existData(toEmail)) {
+        User user = userRepository.findByEmail(toEmail).orElse(null);
+
+        if(Objects.nonNull(user)) {
+            throw new UserException(DUPLICATE_EMAIL);
+        }
+
+       if (redisService.existData(toEmail)) {
            redisService.deleteData(toEmail);
        }
 
@@ -30,6 +43,7 @@ public class EmailService {
        try {
            MimeMessage message = createEmailForm(toEmail, code);
            mailSender.send(message);
+           redisService.setDataExpire(toEmail, code, 60 * 5L);
        } catch (MessagingException e) {
            e.printStackTrace();
        }
@@ -51,18 +65,15 @@ public class EmailService {
         helper.setSubject(EMAIL_TITLE);
         helper.setText(EMAIL_CONTENT + authCode, true);
 
-        redisService.setDataExpire(toEmail, authCode, 60 * 5L);
-
         return message;
 
     }
 
     public Boolean verifyEmailCode(String email, String code) {
+
         String findCode = redisService.getData(email);
-        if (findCode == null) {
-            return false;
-        }
-        return findCode.equals(code);
+        return Objects.equals(findCode, code);
+
     }
 
 }

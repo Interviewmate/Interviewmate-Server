@@ -19,6 +19,7 @@ import org.interviewmate.global.util.encrypt.jwt.service.JwtService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.interviewmate.infra.email.EmailService;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "인증 관련 API")
 @RestController
+@Validated
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthApiController {
@@ -78,10 +80,10 @@ public class AuthApiController {
     public ResponseDto<String> verifyAuthenticationCode(@RequestParam @Email String email, @RequestParam String code) {
 
         if(emailService.verifyEmailCode(email, code)) {
-            return ResponseUtil.SUCCESS(SUCCESS, "인증 완료.");
+            return ResponseUtil.SUCCESS(SUCCESS, "인증 완료");
         }
 
-        return ResponseUtil.SUCCESS(SUCCESS, "인증 실패.");
+        return ResponseUtil.FAILURE(SUCCESS, "인증 실패");
 
     }
 
