@@ -35,9 +35,6 @@ public class PostUserReqDto {
     @Schema(description = "직무", example = "SERVER", allowableValues = {"SERVER, CLIENT, DATA_SCIENTIST, DATA_ANALYST, AI_ENGINEER, AI_RESEARCHER"})
     private String job;
 
-    @Schema(description = "키워드", example = "[\"Spring\", \"JPA\", \"Java\"]")
-    private List<@NotBlank(message = "기술 스택, 언어를 선택하세요.") String> keywords;
-
     public static User toEntity(PostUserReqDto postUserReqDto) {
         return User.builder()
                 .email(postUserReqDto.getEmail())
