@@ -9,9 +9,9 @@ import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.global.error.dto.ErrorResponseDto;
 import org.interviewmate.global.error.exception.CustomException;
-import org.interviewmate.global.util.response.ResponseUtil;
-import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.core.convert.ConversionFailedException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -28,18 +28,18 @@ public class GlobalExceptionHandler {
     private Map<String, String> descriptions = new HashMap<>();
 
     @ExceptionHandler
-    protected ResponseDto<ErrorResponseDto> customExceptionHandler(CustomException e) {
+    protected ResponseEntity customExceptionHandler(CustomException e) {
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
 
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
-        return ResponseUtil.ERROR(e.getErrorCode(), dto);
 
+        return new ResponseEntity(dto, e.getErrorCode().getCode());
     }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    protected ResponseDto<ErrorResponseDto> handleValidException(MethodArgumentNotValidException e) {
+    protected ResponseEntity handleValidException(MethodArgumentNotValidException e) {
 
         BindingResult bindingResult = e.getBindingResult();
 
@@ -55,12 +55,11 @@ public class GlobalExceptionHandler {
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
-        return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, dto);
-
+        return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
-    protected ResponseDto<ErrorResponseDto> handleValidatedException(ConstraintViolationException e) {
+    protected ResponseEntity handleValidatedException(ConstraintViolationException e) {
 
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         constraintViolations.stream()
@@ -71,55 +70,51 @@ public class GlobalExceptionHandler {
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
-        return ResponseUtil.ERROR(ErrorCode. BAD_REQUEST, dto);
-
+        return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({IllegalAccessException.class})
-    protected ResponseDto<ErrorResponseDto> handleIllegalAccessException(IllegalAccessException e){
+    protected ResponseEntity handleIllegalAccessException(IllegalAccessException e){
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
 
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
-        return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, dto);
-
+        return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ConversionFailedException.class})
-    protected ResponseDto<ErrorResponseDto> handleConversionFailedException(ConversionFailedException e) {
+    protected ResponseEntity handleConversionFailedException(ConversionFailedException e) {
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
 
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
-        return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, dto);
-
+        return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({MissingServletRequestParameterException.class})
-    protected ResponseDto<ErrorResponseDto> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+    protected ResponseEntity handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
 
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
-        return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, dto);
+        return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
-    protected ResponseDto<ErrorResponseDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+    protected ResponseEntity handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
 
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
-        return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, dto);
-
+        return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
     }
 
 }
