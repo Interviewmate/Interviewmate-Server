@@ -1,7 +1,6 @@
 package org.interviewmate.infra.email;
 
-import static org.interviewmate.global.error.ErrorCode.EXIST_EMAIL;
-import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_USER;
+import static org.interviewmate.global.error.ErrorCode.DUPLICATE_EMAIL;
 
 import java.util.Objects;
 import java.util.Random;
@@ -32,7 +31,7 @@ public class EmailService {
         User user = userRepository.findByEmail(toEmail).orElse(null);
 
         if(Objects.nonNull(user)) {
-            throw new UserException(EXIST_EMAIL);
+            throw new UserException(DUPLICATE_EMAIL);
         }
 
        if (redisService.existData(toEmail)) {
