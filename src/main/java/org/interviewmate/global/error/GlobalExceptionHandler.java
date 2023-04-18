@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
-
+        dto.setMessage(e.getErrorCode().getMessage());
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
         return new ResponseEntity(dto, e.getErrorCode().getCode());
