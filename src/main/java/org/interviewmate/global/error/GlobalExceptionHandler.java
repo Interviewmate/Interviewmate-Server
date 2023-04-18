@@ -3,6 +3,9 @@ package org.interviewmate.global.error;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.global.error.dto.ErrorResponseDto;
 import org.interviewmate.global.error.exception.CustomException;
@@ -56,6 +59,22 @@ public class GlobalExceptionHandler {
 
     }
 
+    @ExceptionHandler({ConstraintViolationException.class})
+    protected ResponseDto<ErrorResponseDto> handleValidatedException(ConstraintViolationException e) {
+
+        Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+        constraintViolations.stream()
+                .forEach(constraintViolation -> {
+                    descriptions.put("입력된 값 [" + constraintViolation.getInvalidValue() + "]", constraintViolation.getMessage());
+                });
+
+        ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
+        log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
+
+        return ResponseUtil.ERROR(ErrorCode. BAD_REQUEST, dto);
+
+    }
+
     @ExceptionHandler({IllegalAccessException.class})
     protected ResponseDto<ErrorResponseDto> handleIllegalAccessException(IllegalAccessException e){
 
@@ -102,6 +121,5 @@ public class GlobalExceptionHandler {
         return ResponseUtil.ERROR(ErrorCode.BAD_REQUEST, dto);
 
     }
-
 
 }
