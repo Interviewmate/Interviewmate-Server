@@ -1,6 +1,6 @@
 package org.interviewmate.domain.user.service;
 
-import static org.interviewmate.global.error.ErrorCode.EXIST_NICKNAME;
+import static org.interviewmate.global.error.ErrorCode.DUPLICATE_NICKNAME;
 import static org.interviewmate.global.error.ErrorCode.FAIL_TO_LOGIN;
 import static org.interviewmate.global.util.encrypt.Secret.PASSWORD_KEY;
 
@@ -41,11 +41,6 @@ public class UserService {
      */
     public PostUserResDto createUser(PostUserReqDto postUserReqDto) {
 
-        // 닉네임 중복 검사
-        if(!userRepository.findByNickName(postUserReqDto.getNickName()).isEmpty()) {
-            throw new UserException(EXIST_NICKNAME);
-        }
-
         // 유저 생성
         User user = PostUserReqDto.toEntity(postUserReqDto);
         user.setRoles(Collections.singletonList(Authority.builder().name("ROLE_USER").build()));
@@ -84,4 +79,17 @@ public class UserService {
 
     }
 
+    /**
+     *  닉네임 검증
+     */
+    public String checkNickname(String nickName) {
+
+        User user = userRepository.findByNickName(nickName).orElse(null);
+
+        if(!Objects.isNull(user)) {
+            throw new UserException(DUPLICATE_NICKNAME);
+        }
+
+        return "생성 가능한 닉네임입니다.";
+    }
 }
