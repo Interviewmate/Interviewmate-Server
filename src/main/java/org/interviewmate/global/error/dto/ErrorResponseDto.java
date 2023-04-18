@@ -2,34 +2,32 @@ package org.interviewmate.global.error.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
+@Builder(access = AccessLevel.PRIVATE)
 public class ErrorResponseDto {
+
     private String timestamp;
+
     private String trackingId;
+
     @JsonInclude(Include.NON_NULL)
-    private String description;
+    private Map<String, String> descriptions;
 
-    public ErrorResponseDto() {
-        this.timestamp = LocalDateTime.now().toString();
-        this.trackingId = UUID.randomUUID().toString();
+    @Builder
+    public static ErrorResponseDto of(Map<String, String> descriptions) {
+        return ErrorResponseDto.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .trackingId(UUID.randomUUID().toString())
+                .descriptions(descriptions)
+                .build();
     }
 
-    public ErrorResponseDto(String description) {
-        this.timestamp = LocalDateTime.now().toString();
-        this.trackingId = UUID.randomUUID().toString();
-        this.description = description;
-    }
-
-    public static ErrorResponseDto of() {
-        return new ErrorResponseDto();
-    }
-
-    public static ErrorResponseDto of(String description) {
-        return new ErrorResponseDto(description);
-    }
 
 }
