@@ -8,6 +8,9 @@ import org.interviewmate.domain.keyword.service.KeywordService;
 import org.interviewmate.global.util.response.ResponseCode;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
+
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +26,7 @@ public class KeywordApiController {
 
     @Operation(summary = "키워드 연결  API", description = "유저와 선택한 키워드를 연결")
     @PostMapping("/user")
-    public ResponseDto<String> associateKeywordWithUser(@RequestBody PostAssociateKeywordReq postAssociateKeywordReq) {
+    public ResponseEntity<ResponseDto<String>> associateKeywordWithUser(@RequestBody PostAssociateKeywordReq postAssociateKeywordReq) {
         return ResponseUtil.SUCCESS(ResponseCode.SUCCESS, keywordService.associateKeywordWithUser(postAssociateKeywordReq));
     }
 
