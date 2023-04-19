@@ -59,8 +59,11 @@ public class SecurityConfig {
                 // 회원 가입 및 인증 관련 Uri 모든 권한 승인
                 .antMatchers("/users/sign-up", "/auth/**").permitAll()
 
-                // Swagger 관련 모든 권한 승인
+                // Swagger 관련 Uri 모든 권한 승인
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()
+                
+                // debug 관련 모든 권한 승인
+                .antMatchers("/test/**").permitAll()
 
                 // 그 외 모두 USER 권한 허용
                 .antMatchers("/**").hasRole("USER")

@@ -13,6 +13,7 @@ import org.interviewmate.domain.user.service.UserService;
 import org.interviewmate.global.error.ErrorCode;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +29,7 @@ public class UserApiController {
 
     @Operation(summary = "회원 가입 API", description = "필요한 정보를 받아 회원 가입 진행")
     @PostMapping("/sign-up")
-    public ResponseDto<PostUserResDto> signUp(@RequestBody @Valid PostUserReqDto postUserReqDto) {
+    public ResponseEntity<ResponseDto<PostUserResDto>> signUp(@RequestBody @Valid PostUserReqDto postUserReqDto) {
 
         PostUserResDto postUserResDto = userService.createUser(postUserReqDto);
         return ResponseUtil.SUCCESS(CREATED, postUserResDto);

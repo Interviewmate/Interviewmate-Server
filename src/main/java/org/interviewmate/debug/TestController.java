@@ -9,6 +9,7 @@ import org.interviewmate.global.error.exception.CustomException;
 import org.interviewmate.global.util.response.ResponseCode;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.interviewmate.global.util.response.ResponseUtil;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class TestController {
     private final TestService testService;
 
     @GetMapping("/success")
-    public ResponseDto successRepsonseTest() {
+    public ResponseEntity<ResponseDto<ArrayList>> successRepsonseTest() {
         ArrayList<String> list = new ArrayList<>();
         list.add("성공1");
         list.add("성공2");
@@ -31,7 +32,7 @@ public class TestController {
     }
 
     @GetMapping("/failure")
-    public ResponseDto failResponseTest() {
+    public ResponseEntity<ResponseDto<ArrayList>> failResponseTest() {
         return ResponseUtil.FAILURE(ResponseCode.FAILURE_ALREADY_REPORTED, new ArrayList<>());
     }
 
@@ -46,12 +47,12 @@ public class TestController {
     }
 
     @GetMapping("/entity")
-    public ResponseDto baseEntityTest() {
+    public ResponseEntity baseEntityTest() {
         return ResponseUtil.SUCCESS(ResponseCode.SUCCESS, testService.findAll());
     }
 
     @PostMapping("/entity")
-    public ResponseDto createBaseEntityTest(@RequestParam("name") String name){
+    public ResponseEntity createBaseEntityTest(@RequestParam("name") String name){
         testService.create(name);
         return ResponseUtil.SUCCESS(ResponseCode.SUCCESS, null);
     }

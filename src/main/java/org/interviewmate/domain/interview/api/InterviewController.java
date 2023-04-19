@@ -18,6 +18,7 @@ import org.interviewmate.domain.interview.service.InterviewServiceImpl;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -39,7 +40,7 @@ public class InterviewController {
             @ApiResponse(responseCode = "200", description = "면접 생성 성공", content = @Content(schema = @Schema(implementation = InterviewCreateResponseDto.class)))
     })
     @PostMapping("/")
-    public ResponseDto createInterview(@RequestBody InterviewCreateRequestDto dto) {
+    public ResponseEntity<ResponseDto<InterviewCreateResponseDto>> createInterview(@RequestBody InterviewCreateRequestDto dto) {
         InterviewCreateResponseDto interview = interviewService.createInterview(dto);
         return ResponseUtil.SUCCESS(CREATED, interview);
     }
@@ -48,7 +49,7 @@ public class InterviewController {
             @ApiResponse(responseCode = "200", description = "면접 삭제 성공")
     })
     @DeleteMapping("/")
-    public ResponseDto deleteInterview(@RequestBody InterviewDeleteRequestDto dto) {
+    public ResponseEntity<ResponseDto<Object>> deleteInterview(@RequestBody InterviewDeleteRequestDto dto) {
         interviewService.deleteInterview(dto);
         return ResponseUtil.SUCCESS(DELETED, null);
     }
@@ -57,7 +58,7 @@ public class InterviewController {
             @ApiResponse(responseCode = "200", description = "월별 면접 조회 성공", content = @Content(schema = @Schema(implementation = InterviewFindMonthlyResponseDto.class)))
     })
     @GetMapping("/month")
-    public ResponseDto findMonthlyInterview(@RequestParam("userId") Long userId, @RequestParam("yearMonth") YearMonth yearMonth) {
+    public ResponseEntity<ResponseDto<InterviewFindMonthlyResponseDto>> findMonthlyInterview(@RequestParam("userId") Long userId, @RequestParam("yearMonth") YearMonth yearMonth) {
         InterviewFindMonthlyRequestDto dto = new InterviewFindMonthlyRequestDto(userId, yearMonth);
         InterviewFindMonthlyResponseDto monthlyInterview = interviewService.findMonthlyInterview(dto);
         return ResponseUtil.SUCCESS(SUCCESS, monthlyInterview);
@@ -67,7 +68,7 @@ public class InterviewController {
             @ApiResponse(responseCode = "200", description = "일별 면접 조회 성공", content = @Content(schema = @Schema(implementation = InterviewFindDailyResponseDto.class)))
     })
     @GetMapping("/day")
-    public ResponseDto findDailyInterview(@RequestParam("userId") Long userId,
+    public ResponseEntity<ResponseDto<List<InterviewFindDailyResponseDto>>> findDailyInterview(@RequestParam("userId") Long userId,
                                           @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         InterviewFindDailyRequestDto dto = new InterviewFindDailyRequestDto(userId, date);
         List<InterviewFindDailyResponseDto> dailyInterviewList = interviewService.findDailyInterview(dto);

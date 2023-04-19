@@ -18,6 +18,9 @@ public class ErrorResponseDto {
     private String trackingId;
 
     @JsonInclude(Include.NON_NULL)
+    private String message;
+
+    @JsonInclude(Include.NON_NULL)
     private Map<String, String> descriptions;
 
     @Builder
@@ -29,5 +32,8 @@ public class ErrorResponseDto {
                 .build();
     }
 
-
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
+
