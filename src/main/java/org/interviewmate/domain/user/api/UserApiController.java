@@ -31,10 +31,6 @@ public class UserApiController {
     @PostMapping("/sign-up")
     public ResponseEntity<ResponseDto<PostUserResDto>> signUp(@RequestBody @Valid PostUserReqDto postUserReqDto) {
 
-        if (postUserReqDto.getKeywords().isEmpty()) {
-            throw new UserException(ErrorCode.EMPTY_KEYWORD);
-        }
-
         PostUserResDto postUserResDto = userService.createUser(postUserReqDto);
         return ResponseUtil.SUCCESS(CREATED, postUserResDto);
 
