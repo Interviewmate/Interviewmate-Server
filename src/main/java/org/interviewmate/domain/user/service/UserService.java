@@ -55,13 +55,6 @@ public class UserService {
             throw new UserException(FAIL_TO_LOGIN);
         }
 
-//        String password = new AES128(PASSWORD_KEY).decrypt(user.getPassword());
-//
-//        // 비밀번호 일치 확인
-//        if (!Objects.equals(password, loginReq.getPassword())) {
-//            throw new UserException(FAIL_TO_LOGIN);
-//        }
-
         return user;
 
     }
