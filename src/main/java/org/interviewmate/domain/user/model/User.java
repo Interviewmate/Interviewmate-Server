@@ -70,13 +70,14 @@ public class User extends BaseEntity {
         this.baseStatus = baseStatus;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
     public void setRoles(List<Authority> roles) {
         this.roles = roles;
         roles.forEach(role -> role.setUser(this));
     }
 
-    public void setRefreshToken(String refreshToken) {
-        this.refreshToken = refreshToken;
-    }
+
 }
 
