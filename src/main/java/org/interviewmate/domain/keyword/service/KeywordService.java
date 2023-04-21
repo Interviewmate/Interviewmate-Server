@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.keyword.exception.KeywordException;
-import org.interviewmate.domain.keyword.model.request.PostAssociateKeywordReq;
 import org.interviewmate.domain.keyword.repository.KeywordRepository;
 import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
+import org.interviewmate.domain.user.model.dto.request.PostAssociateKeywordReq;
 import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.domain.userkeyword.model.UserKeyword;
 import org.interviewmate.domain.userkeyword.repository.UserKeywordRepository;
@@ -26,7 +26,7 @@ public class KeywordService {
     private final UserRepository userRepository;
     private final UserKeywordRepository userKeywordRepository;
 
-    public String associateKeywordWithUser(PostAssociateKeywordReq postAssociateKeywordReq) {
+    public String associateUserWithKeyword(PostAssociateKeywordReq postAssociateKeywordReq) {
 
         if (postAssociateKeywordReq.getKeywords().isEmpty()) {
             throw new KeywordException(EMPTY_KEYWORD);
@@ -45,4 +45,5 @@ public class KeywordService {
 
         return "유저와 키워드 연결 완료.";
     }
+
 }
