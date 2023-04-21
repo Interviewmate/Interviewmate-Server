@@ -25,10 +25,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private Map<String, String> descriptions = new HashMap<>();
 
     @ExceptionHandler
     protected ResponseEntity customExceptionHandler(CustomException e) {
+
+        Map<String, String> descriptions = new HashMap<>();
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
@@ -40,6 +41,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity handleValidException(MethodArgumentNotValidException e) {
+
+        Map<String, String> descriptions = new HashMap<>();
 
         BindingResult bindingResult = e.getBindingResult();
 
@@ -61,6 +64,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ConstraintViolationException.class})
     protected ResponseEntity handleValidatedException(ConstraintViolationException e) {
 
+        Map<String, String> descriptions = new HashMap<>();
+
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         constraintViolations.stream()
                 .forEach(constraintViolation -> {
@@ -76,6 +81,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalAccessException.class})
     protected ResponseEntity handleIllegalAccessException(IllegalAccessException e){
 
+        Map<String, String> descriptions = new HashMap<>();
+
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
 
@@ -86,6 +93,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({ConversionFailedException.class})
     protected ResponseEntity handleConversionFailedException(ConversionFailedException e) {
+
+        Map<String, String> descriptions = new HashMap<>();
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
@@ -98,6 +107,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({MissingServletRequestParameterException.class})
     protected ResponseEntity handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
+        Map<String, String> descriptions = new HashMap<>();
+
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
 
@@ -108,6 +119,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({HttpMessageNotReadableException.class})
     protected ResponseEntity handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+
+        Map<String, String> descriptions = new HashMap<>();
 
         descriptions.put(e.toString(), e.getMessage());
         ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
