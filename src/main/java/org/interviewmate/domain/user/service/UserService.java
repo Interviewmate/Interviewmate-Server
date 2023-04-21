@@ -1,6 +1,7 @@
 package org.interviewmate.domain.user.service;
 
 import static org.interviewmate.global.common.BaseStatus.ACTIVE;
+import static org.interviewmate.global.error.ErrorCode.DUPLICATE_EMAIL;
 import static org.interviewmate.global.error.ErrorCode.DUPLICATE_NICKNAME;
 import static org.interviewmate.global.error.ErrorCode.FAIL_TO_LOGIN;
 
@@ -31,6 +32,9 @@ public class UserService {
      */
     public PostUserResDto createUser(PostUserReqDto postUserReqDto) {
 
+        checkEmailDuplication(postUserReqDto.getEmail());
+        checkNicknameDuplication(postUserReqDto.getNickName());
+
         // 유저 생성
         User user = PostUserReqDto.toEntity(postUserReqDto);
         user.setPassword(passwordEncoder.encode(postUserReqDto.getPassword()));
@@ -40,6 +44,22 @@ public class UserService {
 
         return PostUserResDto.of(user);
 
+    }
+
+    private boolean checkNicknameDuplication(String nickName) {
+        if (!userRepository.findByNickName(nickName).isEmpty()) {
+            throw new UserException(DUPLICATE_NICKNAME);
+        }
+
+        return true;
+    }
+
+    private boolean checkEmailDuplication(String email) {
+        if (!userRepository.findByEmail(email).isEmpty()) {
+            throw new UserException(DUPLICATE_EMAIL);
+        }
+
+        return true;
     }
 
     /**
@@ -64,12 +84,10 @@ public class UserService {
      */
     public String checkNickname(String nickName) {
 
-        User user = userRepository.findByNickName(nickName).orElse(null);
-
-        if(!Objects.isNull(user)) {
-            throw new UserException(DUPLICATE_NICKNAME);
-        }
+        checkNicknameDuplication(nickName);
 
         return "생성 가능한 닉네임입니다.";
+
     }
+
 }
