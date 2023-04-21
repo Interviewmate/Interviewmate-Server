@@ -6,7 +6,6 @@ import static org.interviewmate.global.error.ErrorCode.DUPLICATE_NICKNAME;
 import static org.interviewmate.global.error.ErrorCode.FAIL_TO_LOGIN;
 
 import java.util.Collections;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.auth.model.dto.request.LoginReq;
 import org.interviewmate.domain.user.exception.UserException;
@@ -46,20 +45,16 @@ public class UserService {
 
     }
 
-    private boolean checkNicknameDuplication(String nickName) {
+    private void checkNicknameDuplication(String nickName) {
         if (!userRepository.findByNickName(nickName).isEmpty()) {
             throw new UserException(DUPLICATE_NICKNAME);
         }
-
-        return true;
     }
 
-    private boolean checkEmailDuplication(String email) {
+    private void checkEmailDuplication(String email) {
         if (!userRepository.findByEmail(email).isEmpty()) {
             throw new UserException(DUPLICATE_EMAIL);
         }
-
-        return true;
     }
 
     /**
@@ -82,12 +77,8 @@ public class UserService {
     /**
      *  닉네임 검증
      */
-    public String checkNickname(String nickName) {
-
-        checkNicknameDuplication(nickName);
-
-        return "생성 가능한 닉네임입니다.";
-
+    public boolean checkNickname(String nickName) {
+        return userRepository.findByNickName(nickName).isEmpty();
     }
 
 }

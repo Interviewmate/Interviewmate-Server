@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.auth.model.dto.request.LoginReq;
 import org.interviewmate.domain.auth.model.dto.request.ReissueAccessTokenReq;
@@ -42,10 +43,17 @@ public class AuthApiController {
     @Operation(summary = "닉네임 중복 검사 API", description = "사용하고 싶은 닉네임을 받아 중복 검사")
     @GetMapping("/check")
     @Parameter(name = "nickName", example = "모아모아뀽")
-    public ResponseEntity<ResponseDto<String>> checkNickname(@RequestParam String nickName) {
-        return ResponseUtil.SUCCESS(SUCCESS, userService.checkNickname(nickName));
-    }
+    public ResponseEntity<ResponseDto<String>> checkNickname(
+            @RequestParam @Pattern(regexp = "^[가-힣\\S]*$", message = "공백을 제거하세요.") String nickName
+    ) {
 
+        if (!userService.checkNickname(nickName)) {
+            return ResponseUtil.FAILURE(SUCCESS, "사용할 수 없는 닉네입입니다.");
+        }
+
+        return ResponseUtil.SUCCESS(SUCCESS, "사용할 수 있는 닉네입입니다.");
+
+    }
 
     @Operation(summary = "로그인 API", description = "필요한 정보를 받아 로그인 진행")
     @PostMapping("/login")
@@ -58,7 +66,9 @@ public class AuthApiController {
 
     @Operation(summary = "어세스 토큰 재발급 API", description = "어세스 토큰 만료시 재발급")
     @PostMapping("/reissue")
-    public ResponseEntity<ResponseDto<ReissueAccessTokenRes>> reissueAccessToken(@RequestBody ReissueAccessTokenReq reissueAccessTokenReq) {
+    public ResponseEntity<ResponseDto<ReissueAccessTokenRes>> reissueAccessToken(
+            @RequestBody ReissueAccessTokenReq reissueAccessTokenReq
+    ) {
         return ResponseUtil.SUCCESS(SUCCESS, jwtService.reissueAccessToken(reissueAccessTokenReq));
     }
 
@@ -78,12 +88,16 @@ public class AuthApiController {
             @Parameter(name = "code", description = "인증 코드", example = "53085")
     })
     @GetMapping("/authCode")
-    public ResponseEntity<ResponseDto<String>> verifyAuthenticationCode(@RequestParam @Email String email, @RequestParam String code) {
+    public ResponseEntity<ResponseDto<String>> verifyAuthenticationCode(
+            @RequestParam @Email String email,
+            @RequestParam String code
+    ) {
 
         if(emailService.verifyEmailCode(email, code)) {
             return ResponseUtil.SUCCESS(SUCCESS, "인증 완료");
         }
         return ResponseUtil.FAILURE(SUCCESS, "인증 실패");
+
     }
 
 }
