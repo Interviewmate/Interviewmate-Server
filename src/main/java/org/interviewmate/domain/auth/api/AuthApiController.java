@@ -18,7 +18,7 @@ import org.interviewmate.domain.user.service.UserService;
 import org.interviewmate.global.util.encrypt.jwt.service.JwtService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
-import org.interviewmate.infra.email.EmailService;
+import org.interviewmate.infra.email.service.EmailService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
