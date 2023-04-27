@@ -37,7 +37,7 @@ import org.interviewmate.global.util.encrypt.jwt.model.Subject;
 import org.interviewmate.global.util.encrypt.jwt.model.TokenType;
 import org.interviewmate.global.util.encrypt.security.exception.SecurityException;
 import org.interviewmate.global.util.encrypt.security.service.CustomUserDetailsService;
-import org.interviewmate.infra.redis.RedisService;
+import org.interviewmate.infra.redis.repository.RedisTokenRepository;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class JwtService {
 
-    private final RedisService redisService;
+    private final RedisTokenRepository redisService;
     private final ObjectMapper objectMapper;
     private final CustomUserDetailsService userDetailsService;
     private final UserRepository userRepository;
@@ -74,9 +74,9 @@ public class JwtService {
 
         String accessToken = issueToken(email, roles, ACCESS_TOKEN);
 
-        if (Objects.isNull(redisService.getData(email))) {
+        if (Objects.isNull(redisService.findByKey(email))) {
             String refreshToken = issueToken(email, roles, REFRESH_TOKEN);
-            redisService.setDataExpire(email, refreshToken, REFRESH_TOKEN.getExpirationTime());
+            redisService.saveWithExpirationDate(email, refreshToken, REFRESH_TOKEN.getExpirationTime());
         }
 
         log.info("-----Complete To Create Token-----");
@@ -150,7 +150,7 @@ public class JwtService {
                 .findByEmail(reissueAccessTokenReq.getEmail())
                 .orElseThrow(() -> new UserException(NOT_EXIST_USER));
 
-        String findToken = redisService.getData(finduser.getEmail());
+        String findToken = redisService.findByKey(finduser.getEmail());
 
         if (Objects.isNull(findToken)) {
             throw new SecurityException(EXPIRED_TOKEN);

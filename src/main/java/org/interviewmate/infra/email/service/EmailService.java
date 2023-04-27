@@ -1,4 +1,4 @@
-package org.interviewmate.infra.email;
+package org.interviewmate.infra.email.service;
 
 import static org.interviewmate.global.error.ErrorCode.DUPLICATE_EMAIL;
 
@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
-import org.interviewmate.infra.redis.RedisService;
+import org.interviewmate.infra.redis.repository.RedisEmailRepository;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -23,7 +23,7 @@ public class EmailService {
     private final String EMAIL_CONTENT = "인증 번호 : ";
 
     private final JavaMailSender mailSender;
-    private final RedisService redisService;
+    private final RedisEmailRepository redisService;
     private final UserRepository userRepository;
 
     public String sendEmail(String toEmail) {
@@ -34,8 +34,8 @@ public class EmailService {
             throw new UserException(DUPLICATE_EMAIL);
         }
 
-       if (redisService.existData(toEmail)) {
-           redisService.deleteData(toEmail);
+       if (redisService.isExist(toEmail)) {
+           redisService.delete(toEmail);
        }
 
        String code = createAuthCode();
@@ -43,7 +43,7 @@ public class EmailService {
        try {
            MimeMessage message = createEmailForm(toEmail, code);
            mailSender.send(message);
-           redisService.setDataExpire(toEmail, code, 60 * 5L);
+           redisService.saveWithExpirationDate(toEmail, code, 60 * 5L);
        } catch (MessagingException e) {
            e.printStackTrace();
        }
@@ -71,7 +71,7 @@ public class EmailService {
 
     public Boolean verifyEmailCode(String email, String code) {
 
-        String findCode = redisService.getData(email);
+        String findCode = redisService.findByKey(email);
         return Objects.equals(findCode, code);
 
     }

@@ -16,7 +16,7 @@ import org.interviewmate.domain.user.model.User;
 public class PostUserReqDto {
 
     @Email(message = "올바르지 않은 이메일 형식입니다.")
-    @Schema(description = "이메일", example = "moa.moa.interview@gmail.com")
+    @Schema(description = "이자메일", example = "moa.moa.interview@gmail.com")
     private String email;
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%&*?])[A-Za-z\\d!@#$%&*?]{8,}$", message = "최소 1개의 문자, 숫자, 기호를 조합하여 8자 이상을 사용하세요.")
     @Schema(description = "비밀번호", example = "Moamoa0302!")
