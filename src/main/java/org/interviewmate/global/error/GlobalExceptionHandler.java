@@ -25,14 +25,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private Map<String, String> descriptions = new HashMap<>();
-
     @ExceptionHandler
     protected ResponseEntity customExceptionHandler(CustomException e) {
 
-        descriptions.put(e.toString(), e.getMessage());
-        ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
-        dto.setMessage(e.getErrorCode().getMessage());
+        ErrorResponseDto dto = ErrorResponseDto.of(e.getErrorCode().getMessage());
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
         return new ResponseEntity(dto, e.getErrorCode().getCode());
@@ -41,8 +37,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({MethodArgumentNotValidException.class})
     protected ResponseEntity handleValidException(MethodArgumentNotValidException e) {
 
-        BindingResult bindingResult = e.getBindingResult();
+        Map<String, String> descriptions = new HashMap<>();
 
+        BindingResult bindingResult = e.getBindingResult();
         List<ObjectError> allErrors = bindingResult.getAllErrors();
         for (ObjectError error : allErrors) {
             if (error instanceof FieldError) {
@@ -61,6 +58,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ConstraintViolationException.class})
     protected ResponseEntity handleValidatedException(ConstraintViolationException e) {
 
+        Map<String, String> descriptions = new HashMap<>();
+
         Set<ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
         constraintViolations.stream()
                 .forEach(constraintViolation -> {
@@ -76,9 +75,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({IllegalAccessException.class})
     protected ResponseEntity handleIllegalAccessException(IllegalAccessException e){
 
-        descriptions.put(e.toString(), e.getMessage());
-        ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
-
+        ErrorResponseDto dto = ErrorResponseDto.of(e.getMessage());
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
         return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
@@ -87,9 +84,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({ConversionFailedException.class})
     protected ResponseEntity handleConversionFailedException(ConversionFailedException e) {
 
-        descriptions.put(e.toString(), e.getMessage());
-        ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
-
+        ErrorResponseDto dto = ErrorResponseDto.of(e.getMessage());
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
         return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
@@ -98,9 +93,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({MissingServletRequestParameterException.class})
     protected ResponseEntity handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
-        descriptions.put(e.toString(), e.getMessage());
-        ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
-
+        ErrorResponseDto dto = ErrorResponseDto.of(e.getMessage());
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
         return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);
@@ -109,9 +102,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({HttpMessageNotReadableException.class})
     protected ResponseEntity handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
 
-        descriptions.put(e.toString(), e.getMessage());
-        ErrorResponseDto dto = ErrorResponseDto.of(descriptions);
-
+        ErrorResponseDto dto = ErrorResponseDto.of(e.getMessage());
         log.error("Error occurred in controller advice: [id={}]", dto.getTrackingId());
 
         return new ResponseEntity(dto, HttpStatus.BAD_REQUEST);

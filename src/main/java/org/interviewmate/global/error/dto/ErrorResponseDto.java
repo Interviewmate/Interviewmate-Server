@@ -24,6 +24,14 @@ public class ErrorResponseDto {
     private Map<String, String> descriptions;
 
     @Builder
+    public static ErrorResponseDto of(String message) {
+        return ErrorResponseDto.builder()
+                .timestamp(LocalDateTime.now().toString())
+                .trackingId(UUID.randomUUID().toString())
+                .message(message)
+                .build();
+    }
+    @Builder
     public static ErrorResponseDto of(Map<String, String> descriptions) {
         return ErrorResponseDto.builder()
                 .timestamp(LocalDateTime.now().toString())
