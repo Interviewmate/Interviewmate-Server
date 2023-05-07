@@ -7,18 +7,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;
-import org.interviewmate.domain.interview.model.dto.response.InterviewCreateResponseDto;
 import org.interviewmate.domain.portfolio.model.dto.request.PortfolioGetKeywordRequestDto;
 import org.interviewmate.domain.portfolio.service.PortfolioService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-
-import static org.interviewmate.global.util.response.ResponseCode.CREATED;
 import static org.interviewmate.global.util.response.ResponseCode.SUCCESS;
 
 @Slf4j
@@ -29,14 +23,12 @@ import static org.interviewmate.global.util.response.ResponseCode.SUCCESS;
 public class PortfolioApiController {
     private final PortfolioService portfolioService;
 
-    @Operation(summary = "포트폴리오 키워드 추출 요청", description = "queryParam을 이용해 포트폴리오에서 키워드를 추출합니다.", responses = {
+    @Operation(summary = "포트폴리오 키워드 추출 요청", description = "pathVariable 을 이용해 포트폴리오에서 키워드를 추출합니다.", responses = {
             @ApiResponse(responseCode = "200", description = "포트폴리오 키워드 추출 성공")
     })
-    @GetMapping("/keyword")
-    public ResponseEntity<ResponseDto<String>> getPortfolioKeyword(@RequestParam("userId") Long userId,
-                                                                   @RequestParam("url") String url) {
-        log.info("url: {}", url);
-        portfolioService.getKeyword(new PortfolioGetKeywordRequestDto(userId,url));
+    @GetMapping("/keyword/{userId}")
+    public ResponseEntity<ResponseDto<String>> getPortfolioKeyword(@PathVariable("userId") Long userId) {
+        portfolioService.getKeyword(new PortfolioGetKeywordRequestDto(userId));
         return ResponseUtil.SUCCESS(SUCCESS, null);
     }
 }

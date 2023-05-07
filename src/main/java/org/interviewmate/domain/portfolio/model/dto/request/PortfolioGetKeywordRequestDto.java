@@ -15,8 +15,4 @@ public class PortfolioGetKeywordRequestDto {
     @Schema(description = "사용자 id")
     @NotNull
     private Long userId;
-
-    @Schema(description = "S3 url")
-    @NotNull
-    private String url;
 }

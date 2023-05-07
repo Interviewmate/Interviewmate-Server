@@ -30,6 +30,8 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
+    //todo : portfolio setUrl 해서 update (이때 해당 user의 portfolio가 없다면 create)
+
     /**
      * 파일 저장 1. Pre-Signed Url 생성 -> 2. object-key를 해당하는 객체 테이블에 저장
      */

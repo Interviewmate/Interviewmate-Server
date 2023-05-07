@@ -1,6 +1,5 @@
 package org.interviewmate.domain.portfolio.service;
 
-import com.amazonaws.services.s3.AmazonS3;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.portfolio.exception.PortfolioException;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,35 +23,39 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class PortfolioService {
-    private final AmazonS3 amazonS3;
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    //프론트가 포트폴리오 올림 (이전에 올릴 s3 링크 받았음), 키워드 추출 요청 보냄 (url과 userId 넣어서)
-    // + (이 방법 혹은 //S3 사용자 id로 portfolio S3 url 찾기)
-    // Portfolio setUrl, url로 포트폴리오 로컬에 다운로드, ai 서버에 로컬 저장 경로 넣어서 키워드 추출 요청
-    // 반환된 키워드를 Portfolio setKeywords, 로컬에서 포트폴리오 삭제
+    // todo: createPortfolio는 debug 위한 메서드. s3 service에서 구현되면 삭제해야 함
+    public void createPortfolio(Long userId, String url) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
+
+
+        Portfolio portfolio = portfolioRepository.save(Portfolio.builder()
+                .url(url)
+                .user(user)
+                .build());
+        portfolioRepository.save(portfolio);
+    }
 
     public void getKeyword(PortfolioGetKeywordRequestDto dto) {
         User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
+        Portfolio portfolio = portfolioRepository.findByUser(user).orElseThrow(() -> new PortfolioException(ErrorCode.PORTFOLIO_NOT_FOUND));
 
-        List<String> keywords = sendRequestToAiServer(dto.getUrl(), dto.getUserId());
+        List<String> keywords = sendRequestToAiServer(portfolio.getUrl(), dto.getUserId());
+        portfolio.setKeyword(keywords);
 
-        Portfolio portfolio = Portfolio.builder()
-                .user(user)
-                .url(dto.getUrl())
-                .keywords(keywords)
-                .build();
+        log.info("portfolio.getkeyword: {}",portfolio.getKeywords());
 
         portfolioRepository.save(portfolio);
     }
     
     private List<String> sendRequestToAiServer(String url, Long userId){ //ai 서버로 키워드 추출 요청
         //ai 서버에 get 요청
-        PortfolioAiServerResponseDto responseDto = WebClient.create().get()
+        PortfolioAiServerResponseDto response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder
                         .path("localhost:5000/keyword")
                         .queryParam("url", url)
@@ -63,8 +65,10 @@ public class PortfolioService {
                 .bodyToMono(PortfolioAiServerResponseDto.class)
                 .block();
 
+        //todo : flask에서 statusCode 넣어주면 각 code별 에러처리
+
         //string -> list
-        List<String> keywords = Arrays.asList(responseDto.getKeywords().split(" "));
+        List<String> keywords = Arrays.asList(response.getKeywords().split(" "));
 
         log.info("포트폴리오 키워드: {}", keywords);
 
