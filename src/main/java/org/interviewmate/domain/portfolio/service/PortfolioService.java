@@ -27,8 +27,8 @@ import java.util.List;
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
-    @Value("${ai.portfolio.keyword}")
-    private String keywordUri = "localhost:5000/keyword";
+    @Value("${ai.portfolio.keyword}") //todo : 배포 오류로 인해 주석처리함
+    private String keywordUri;
 
     // todo: createPortfolio는 debug 위한 메서드. s3 service에서 구현되면 삭제해야 함
     public void createPortfolio(Long userId, String url) {
