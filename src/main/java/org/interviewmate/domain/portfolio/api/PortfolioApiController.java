@@ -1,8 +1,6 @@
 package org.interviewmate.domain.portfolio.api;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +21,7 @@ import static org.interviewmate.global.util.response.ResponseCode.SUCCESS;
 public class PortfolioApiController {
     private final PortfolioService portfolioService;
 
-    @Operation(summary = "포트폴리오 키워드 추출 요청", description = "pathVariable 을 이용해 포트폴리오에서 키워드를 추출합니다.", responses = {
+    @Operation(summary = "포트폴리오 키워드 추출 요청", description = "pathVariable (Long userId) 을 이용해 포트폴리오에서 키워드를 추출합니다.", responses = {
             @ApiResponse(responseCode = "200", description = "포트폴리오 키워드 추출 성공")
     })
     @GetMapping("/keyword/{userId}")

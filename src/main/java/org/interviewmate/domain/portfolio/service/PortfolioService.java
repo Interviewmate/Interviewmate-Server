@@ -11,9 +11,11 @@ import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.global.error.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,14 +27,12 @@ import java.util.List;
 public class PortfolioService {
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
-
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    @Value("${ai.portfolio.keyword}")
+    private String keywordUri;
 
     // todo: createPortfolio는 debug 위한 메서드. s3 service에서 구현되면 삭제해야 함
     public void createPortfolio(Long userId, String url) {
         User user = userRepository.findById(userId).orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
-
 
         Portfolio portfolio = portfolioRepository.save(Portfolio.builder()
                 .url(url)
@@ -57,20 +57,24 @@ public class PortfolioService {
         //ai 서버에 get 요청
         PortfolioAiServerResponseDto response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("localhost:5000/keyword")
+                        .path(keywordUri)
                         .queryParam("url", url)
                         .queryParam("userId", userId)
                         .build())
                 .retrieve()
+                .onStatus(
+                        httpStatus -> httpStatus == HttpStatus.NOT_FOUND,
+                        clientResponse -> Mono.error(new PortfolioException(ErrorCode.S3_PORTFOLIO_NOT_FOUNT))
+                )
+                .onStatus(
+                        httpStatus -> httpStatus == HttpStatus.BAD_REQUEST,
+                        clientResponse -> Mono.error(new PortfolioException(ErrorCode.SERVER_FAILED_CREATE_KEYWORD))
+                )
                 .bodyToMono(PortfolioAiServerResponseDto.class)
                 .block();
 
-        //todo : flask에서 statusCode 넣어주면 각 code별 에러처리
-
         //string -> list
         List<String> keywords = Arrays.asList(response.getKeywords().split(" "));
-
-        log.info("포트폴리오 키워드: {}", keywords);
 
         return keywords;
     }
