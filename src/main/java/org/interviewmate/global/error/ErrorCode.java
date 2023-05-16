@@ -43,7 +43,14 @@ public enum ErrorCode {
     NOT_EXIST_USER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
 
     //interview error
-    INTERVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 인터뷰가 없습니다");
+    INTERVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 인터뷰가 없습니다"),
+
+    //portfolio error
+    PORTFOLIO_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 유저의 포트폴리오가 없습니다"),
+    FAIL_TO_CONNECT_AI_SERVER(HttpStatus.BAD_REQUEST, "ai 서버와의 연결이 실패했습니다"),
+    S3_PORTFOLIO_NOT_FOUNT(HttpStatus.NOT_FOUND, "S3에 해당 유저의 포트폴리오가 존재하지 않습니다."),
+    SERVER_FAILED_CREATE_KEYWORD(HttpStatus.INTERNAL_SERVER_ERROR, "키워드 생성을 실패했습니다.");
+    // todo : 상황별 error code 만들기 (s3에 없는 포트폴리오, 키워드 생성에 실패, 등등)
 
     private final HttpStatus code;
     private final String message;
