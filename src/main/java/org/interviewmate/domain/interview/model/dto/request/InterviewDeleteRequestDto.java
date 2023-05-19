@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 @Schema(description = "면접 삭제 request dto")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class InterviewDeleteRequestDto {
     @Schema(description = "interview id")
     @NotNull
