@@ -3,10 +3,8 @@ package org.interviewmate.domain.analysis.api;
 import static org.interviewmate.global.util.response.ResponseCode.*;
 
 import lombok.RequiredArgsConstructor;
-import org.interviewmate.domain.analysis.model.BehaviorAnalysis;
 import org.interviewmate.domain.analysis.service.BehaviorAnalysisService;
 import org.interviewmate.domain.analysis.service.GazeAnalysisService;
-import org.interviewmate.global.util.response.ResponseCode;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
