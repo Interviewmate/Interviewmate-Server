@@ -1,8 +1,8 @@
-package org.interviewmate.domain.behavior.service;
+package org.interviewmate.domain.analysis.service;
 
 import lombok.RequiredArgsConstructor;
-import org.interviewmate.domain.behavior.model.BehaviorAnalysis;
-import org.interviewmate.domain.behavior.repository.BehaviorAnalysisRepository;
+import org.interviewmate.domain.analysis.model.BehaviorAnalysis;
+import org.interviewmate.domain.analysis.repository.BehaviorAnalysisRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

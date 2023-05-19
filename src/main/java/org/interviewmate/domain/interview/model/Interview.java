@@ -1,10 +1,12 @@
 package org.interviewmate.domain.interview.model;
 
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.behavior.model.BehaviorAnalysis;
+import org.interviewmate.domain.analysis.model.BehaviorAnalysis;
+import org.interviewmate.domain.analysis.model.GazeAnalysis;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.global.common.BaseEntity;
 
@@ -15,6 +17,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Interview extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long interId;
@@ -23,13 +26,23 @@ public class Interview extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "behavior_analysis_id")
+    @OneToOne(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
     private BehaviorAnalysis behaviorAnalysis;
+
+    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<GazeAnalysis> gazeAnalyses;
 
     @Builder
     public Interview(User user, BehaviorAnalysis behaviorAnalysis) {
         this.user = user;
         this.behaviorAnalysis = behaviorAnalysis;
+    }
+
+    public void setBehaviorAnalysis(BehaviorAnalysis behaviorAnalysis) {
+        this.behaviorAnalysis = behaviorAnalysis;
+    }
+
+    public void setGazeAnalysis(List<GazeAnalysis> gazeAnalyses) {
+        this.gazeAnalyses = gazeAnalyses;
     }
 }

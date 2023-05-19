@@ -1,9 +1,10 @@
-package org.interviewmate.domain.behavior.model;
+package org.interviewmate.domain.analysis.model;
 
 import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import org.interviewmate.domain.interview.model.Interview;
 
 @Entity
 @Table(name = "behavior_analysis")
@@ -14,8 +15,13 @@ public class BehaviorAnalysis {
     @Column(name = "behavior_analysis_id")
     private Long beId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "interview_id")
+    private Interview interview;
+
     @Column(columnDefinition = "TEXT")
     private String emotion;
+
     @Column(columnDefinition = "TEXT")
     private String pose;
 
