@@ -7,11 +7,12 @@ import lombok.Getter;
 import javax.persistence.*;
 import lombok.NoArgsConstructor;
 import org.interviewmate.domain.interview.model.Interview;
+import org.interviewmate.global.common.BaseEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BehaviorAnalysis {
+public class BehaviorAnalysis extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "behavior_analysis_id")
