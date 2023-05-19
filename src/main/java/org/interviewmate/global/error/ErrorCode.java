@@ -25,7 +25,7 @@ public enum ErrorCode {
     FAIL_TO_LOAD_SUBJECT(HttpStatus.BAD_REQUEST, "토큰에 대한 정보를 불러올 수 없습니다."),
     INVALID_TOKEN_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰 타입입니다."),
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
-
+    FAILED_GAZE_ANALYSIS(HttpStatus.INTERNAL_SERVER_ERROR, "시선 분석을 실패했습니다."),
 
     INVALID_KEYWORD(HttpStatus.BAD_REQUEST, "유효하지 않은 키워드입니다"),
 
@@ -41,6 +41,7 @@ public enum ErrorCode {
 
     /* NOT_FOUND : 404 */
     NOT_EXIST_USER(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
+    NOT_EXIST_INTERVIEW_VIDEO(HttpStatus.NOT_FOUND, "S3에 해당 인터뷰의 영상이 존재하지 않습니다."),
 
     //interview error
     INTERVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 인터뷰가 없습니다"),
