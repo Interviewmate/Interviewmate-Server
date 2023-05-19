@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InterviewFindDailyRequestDto {
-    @Schema(description = "사용자 id")
+    @Schema(description = "사용자 id", example = "1")
     @NotNull
     private Long userId;
 
