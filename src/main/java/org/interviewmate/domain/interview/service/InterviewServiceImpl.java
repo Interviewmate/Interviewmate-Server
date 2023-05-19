@@ -29,10 +29,9 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class InterviewServiceImpl implements InterviewService{
+
     private final InterviewRepository interviewRepository;
     private final UserDebugService userDebugService;
-    private final BehaviorAnalysisService behaviorAnalysisService;
-    private final UserService userService;
 
     /**
      * 면접 생성
@@ -41,11 +40,11 @@ public class InterviewServiceImpl implements InterviewService{
      */
     @Override
     public InterviewCreateResponseDto createInterview(InterviewCreateRequestDto dto) {
+
         User user = userDebugService.findUser(dto.getUserId());
-        BehaviorAnalysis behaviorAnalysis = behaviorAnalysisService.createBehaviorAnalysis();
+
         Interview interview = Interview.builder()
                 .user(user)
-                .behaviorAnalysis(behaviorAnalysis)
                 .build();
 
         Interview save = interviewRepository.save(interview);

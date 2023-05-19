@@ -1,13 +1,15 @@
 package org.interviewmate.domain.analysis.model;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
+import lombok.NoArgsConstructor;
 import org.interviewmate.domain.interview.model.Interview;
 
 @Entity
-@Table(name = "behavior_analysis")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class BehaviorAnalysis {
     @Id
@@ -19,28 +21,18 @@ public class BehaviorAnalysis {
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
-    @Column(columnDefinition = "TEXT")
-    private String emotion;
+    private Long start;
 
-    @Column(columnDefinition = "TEXT")
-    private String pose;
+    private Long end;
+
+    private Long duringTIme;
 
     @Builder
-    public BehaviorAnalysis(String emotion, String pose) {
-        this.emotion = emotion;
-        this.pose = pose;
+    public BehaviorAnalysis(Interview interview, Long start, Long end, Long duringTIme) {
+        this.interview = interview;
+        this.start = start;
+        this.end = end;
+        this.duringTIme = duringTIme;
     }
 
-    public BehaviorAnalysis() { //처음에 빈 값 넣어줌
-        this.emotion = "";
-        this.pose = "";
-    }
-
-    public void setEmotion(String emotion) {
-        this.emotion = emotion;
-    }
-
-    public void setPose(String pose) {
-        this.pose = pose;
-    }
 }
