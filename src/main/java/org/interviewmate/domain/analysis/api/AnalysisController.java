@@ -1,7 +1,13 @@
 package org.interviewmate.domain.analysis.api;
 
+import static org.interviewmate.global.util.response.ResponseCode.*;
+
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.analysis.service.GazeAnalysisService;
+import org.interviewmate.global.util.response.ResponseCode;
+import org.interviewmate.global.util.response.ResponseUtil;
+import org.interviewmate.global.util.response.dto.ResponseDto;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +22,7 @@ public class AnalysisController {
     private final GazeAnalysisService gazeAnalysisService;
 
     @GetMapping("/{interviewId}")
-    public String createAnalysis(@PathVariable Long interviewId, @RequestParam String objectKey) {
+    public ResponseEntity<ResponseDto<String>> createAnalysis(@PathVariable Long interviewId, @RequestParam String objectKey) {
 
         gazeAnalysisService.createGazeAnalysis(interviewId, objectKey);
 
@@ -25,7 +31,7 @@ public class AnalysisController {
         // todo: 답변 분석
 
 
-        return "";
+        return ResponseUtil.SUCCESS(SUCCESS, "");
     }
 
 }
