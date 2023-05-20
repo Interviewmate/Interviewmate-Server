@@ -26,6 +26,7 @@ public enum ErrorCode {
     INVALID_TOKEN_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰 타입입니다."),
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
     FAILED_GAZE_ANALYSIS(HttpStatus.INTERNAL_SERVER_ERROR, "시선 분석을 실패했습니다."),
+    FAILED_BEHAVIOR_ANALYSIS(HttpStatus.INTERNAL_SERVER_ERROR, "행동 분석을 실패했습니다."),
 
     INVALID_KEYWORD(HttpStatus.BAD_REQUEST, "유효하지 않은 키워드입니다"),
 

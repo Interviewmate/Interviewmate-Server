@@ -5,7 +5,7 @@ import static org.interviewmate.global.error.ErrorCode.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import org.interviewmate.domain.analysis.exception.GazeAnalysisException;
+import org.interviewmate.domain.analysis.exception.AnalysisException;
 import org.interviewmate.domain.analysis.model.GazeAnalysis;
 import org.interviewmate.domain.analysis.model.vo.AiServerGazeAnalysisVO;
 import org.interviewmate.domain.analysis.repository.GazeAnalysisRepository;
@@ -56,11 +56,11 @@ public class GazeAnalysisService {
                 .retrieve()
                 .onStatus(
                         httpStatus -> httpStatus == HttpStatus.NOT_FOUND,
-                        clientResponse -> Mono.error(new GazeAnalysisException(NOT_EXIST_INTERVIEW_VIDEO))
+                        clientResponse -> Mono.error(new AnalysisException(NOT_EXIST_INTERVIEW_VIDEO))
                 )
                 .onStatus(
                         httpStatus -> httpStatus == HttpStatus.BAD_REQUEST,
-                        clientResponse -> Mono.error(new GazeAnalysisException(FAILED_GAZE_ANALYSIS))
+                        clientResponse -> Mono.error(new AnalysisException(FAILED_GAZE_ANALYSIS))
                 )
                 .bodyToMono(AiServerGazeAnalysisVO.class)
                 .block();
