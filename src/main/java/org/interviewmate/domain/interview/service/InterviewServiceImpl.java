@@ -16,6 +16,7 @@ import org.interviewmate.domain.interview.model.dto.response.InterviewFindDailyR
 import org.interviewmate.domain.interview.model.dto.response.InterviewFindMonthlyResponseDto;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.user.model.User;
+import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.domain.user.service.UserService;
 import org.interviewmate.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,8 @@ import java.util.List;
 public class InterviewServiceImpl implements InterviewService{
 
     private final InterviewRepository interviewRepository;
-    private final UserDebugService userDebugService;
+    private final BehaviorAnalysisService behaviorAnalysisService;
+    private final UserRepository userRepository;
 
     /**
      * 면접 생성
@@ -41,7 +43,8 @@ public class InterviewServiceImpl implements InterviewService{
     @Override
     public InterviewCreateResponseDto createInterview(InterviewCreateRequestDto dto) {
 
-        User user = userDebugService.findUser(dto.getUserId());
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new InterviewException(ErrorCode.NOT_EXIST_USER));
+        BehaviorAnalysis behaviorAnalysis = behaviorAnalysisService.createBehaviorAnalysis();
 
         Interview interview = Interview.builder()
                 .user(user)
@@ -69,7 +72,7 @@ public class InterviewServiceImpl implements InterviewService{
      */
     @Override
     public InterviewFindMonthlyResponseDto findMonthlyInterview(InterviewFindMonthlyRequestDto dto) {
-        User user = userDebugService.findUser(dto.getUserId());
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new InterviewException(ErrorCode.NOT_EXIST_USER));
         int year = dto.getYearMonth().getYear();
         int month = dto.getYearMonth().getMonthValue();
         int lastDay = dto.getYearMonth().lengthOfMonth();
@@ -87,7 +90,7 @@ public class InterviewServiceImpl implements InterviewService{
 
     @Override
     public List<InterviewFindDailyResponseDto> findDailyInterview(InterviewFindDailyRequestDto dto) {
-        User user = userDebugService.findUser(dto.getUserId());
+        User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new InterviewException(ErrorCode.NOT_EXIST_USER));
 
         LocalDateTime startDateTime = LocalDateTime.of(dto.getDate(), LocalTime.of(0, 0, 0));
         LocalDateTime endDateTime = LocalDateTime.of(dto.getDate(), LocalTime.of(23, 59, 59));

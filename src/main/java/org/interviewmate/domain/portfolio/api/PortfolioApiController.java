@@ -27,6 +27,6 @@ public class PortfolioApiController {
     @GetMapping("/keyword/{userId}")
     public ResponseEntity<ResponseDto<String>> getPortfolioKeyword(@PathVariable("userId") Long userId) {
         portfolioService.getKeyword(new PortfolioGetKeywordRequestDto(userId));
-        return ResponseUtil.SUCCESS(SUCCESS, null);
+        return ResponseUtil.SUCCESS(SUCCESS, "키워드 추출 완료");
     }
 }

@@ -14,7 +14,7 @@ import java.time.YearMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InterviewFindMonthlyRequestDto {
-    @Schema(description = "사용자 id")
+    @Schema(description = "사용자 id", example = "1")
     @NonNull
     private Long userId;
 

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,7 +34,7 @@ public class AnalysisController {
             @Parameter(name = "interviewId", description = "인터뷰 식별자"),
             @Parameter(name = "objectKey", description = "객체 키")
     })
-    @GetMapping("/{interviewId}")
+    @PostMapping("/{interviewId}")
     public ResponseEntity<ResponseDto<String>> createAnalysis(@PathVariable Long interviewId, @RequestParam String objectKey) {
 
         gazeAnalysisService.createGazeAnalysis(interviewId, objectKey);
