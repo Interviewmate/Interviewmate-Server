@@ -33,9 +33,8 @@ public class Interview extends BaseEntity {
     private List<GazeAnalysis> gazeAnalyses;
 
     @Builder
-    public Interview(User user, BehaviorAnalysis behaviorAnalysis) {
+    public Interview(User user) {
         this.user = user;
-        this.behaviorAnalysis = behaviorAnalysis;
     }
 
     public void setBehaviorAnalysis(BehaviorAnalysis behaviorAnalysis) {
