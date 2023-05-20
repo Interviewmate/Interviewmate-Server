@@ -48,11 +48,12 @@ public class QuestionService {
                 .job(user.getJob().name())
                 .build();
 
-        return sendRequestToAiServer(aiServerRequestDto);
+        List<QuestionInfoDto> questionList = sendRequestToAiServer(aiServerRequestDto);
+        return new QuestionGetResponseDto(questionList.size(), questionList);
     }
 
     //ai 서버에 요청 보내고 응답 받기
-    private QuestionGetResponseDto sendRequestToAiServer(QuestionAiServerRequestDto dto) {
+    private List<QuestionInfoDto> sendRequestToAiServer(QuestionAiServerRequestDto dto) {
 
         List<Long> response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder
@@ -67,10 +68,9 @@ public class QuestionService {
                 })
                 .block();
 
-        List<QuestionInfoDto> questionList = response.stream()
+        return response.stream()
                 .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId+1).orElseThrow()))
                 .collect(Collectors.toList());
 
-        return new QuestionGetResponseDto(questionList.size(), questionList);
     }
 }
