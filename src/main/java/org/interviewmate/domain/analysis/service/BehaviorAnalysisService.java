@@ -1,7 +1,6 @@
 package org.interviewmate.domain.analysis.service;
 
 import static org.interviewmate.global.error.ErrorCode.FAILED_BEHAVIOR_ANALYSIS;
-import static org.interviewmate.global.error.ErrorCode.FAILED_GAZE_ANALYSIS;
 import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_INTERVIEW_VIDEO;
 import static org.interviewmate.global.error.ErrorCode.NOT_FOUND_DATA;
 
@@ -10,13 +9,12 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.analysis.exception.AnalysisException;
 import org.interviewmate.domain.analysis.model.BehaviorAnalysis;
-import org.interviewmate.domain.analysis.model.GazeAnalysis;
 import org.interviewmate.domain.analysis.model.vo.AiServerBehaviorAnalysisVO;
-import org.interviewmate.domain.analysis.model.vo.AiServerGazeAnalysisVO;
 import org.interviewmate.domain.analysis.repository.BehaviorAnalysisRepository;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,8 +26,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class BehaviorAnalysisService {
 
-    private final static String BASE_URL = "localhost:5000";
-    private final static String BEHAVIOR_ANALYSIS_URI = "/behavior_analysis";
+    @Value("{$ai-model.analysis.behavior}")
+    private String BEHAVIOR_ANALYSIS_URI = "/behavior_analysis";
 
     private final InterviewRepository interviewRepository;
     private final BehaviorAnalysisRepository behaviorAnalysisRepository;
@@ -52,12 +50,9 @@ public class BehaviorAnalysisService {
 
     }
 
-    private static AiServerBehaviorAnalysisVO executeBehaviorAnalysis(Long interviewId, String objectKey) {
+    private AiServerBehaviorAnalysisVO executeBehaviorAnalysis(Long interviewId, String objectKey) {
 
-        AiServerBehaviorAnalysisVO response = WebClient.builder()
-                .baseUrl(BASE_URL)
-                .build()
-                .get()
+        AiServerBehaviorAnalysisVO response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder.path(BEHAVIOR_ANALYSIS_URI)
                         .queryParam("interviewId", interviewId)
                         .queryParam("objectKey", objectKey)
