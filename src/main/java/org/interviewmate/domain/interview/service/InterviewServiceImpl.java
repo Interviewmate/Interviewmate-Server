@@ -3,8 +3,8 @@ package org.interviewmate.domain.interview.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.debug.user.UserDebugService;
-import org.interviewmate.domain.behavior.model.BehaviorAnalysis;
-import org.interviewmate.domain.behavior.service.BehaviorAnalysisService;
+import org.interviewmate.domain.analysis.model.BehaviorAnalysis;
+import org.interviewmate.domain.analysis.service.BehaviorAnalysisService;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;
@@ -30,8 +30,8 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class InterviewServiceImpl implements InterviewService{
+
     private final InterviewRepository interviewRepository;
-    private final UserDebugService userDebugService;
     private final BehaviorAnalysisService behaviorAnalysisService;
     private final UserRepository userRepository;
 
@@ -42,11 +42,12 @@ public class InterviewServiceImpl implements InterviewService{
      */
     @Override
     public InterviewCreateResponseDto createInterview(InterviewCreateRequestDto dto) {
+
         User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new InterviewException(ErrorCode.NOT_EXIST_USER));
         BehaviorAnalysis behaviorAnalysis = behaviorAnalysisService.createBehaviorAnalysis();
+
         Interview interview = Interview.builder()
                 .user(user)
-                .behaviorAnalysis(behaviorAnalysis)
                 .build();
 
         Interview save = interviewRepository.save(interview);

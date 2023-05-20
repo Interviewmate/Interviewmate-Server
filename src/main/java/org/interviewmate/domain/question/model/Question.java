@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.interviewmate.global.util.converter.StringArrayConverter;
-
 import javax.persistence.*;
 import java.util.List;
 
