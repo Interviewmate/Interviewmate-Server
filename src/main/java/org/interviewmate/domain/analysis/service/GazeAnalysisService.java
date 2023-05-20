@@ -12,6 +12,7 @@ import org.interviewmate.domain.analysis.repository.GazeAnalysisRepository;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,8 +22,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class GazeAnalysisService {
 
-    private final static String BASE_URL = "localhost:5000";
-    private final static String GAZE_ANALYSIS_URI = "/gaze_analysis";
+    @Value("{$ai-model.analysis.gaze}")
+    private String GAZE_ANALYSIS_URI;
 
     private final InterviewRepository interviewRepository;
     private final GazeAnalysisRepository gazeAnalysisRepository;
@@ -46,11 +47,8 @@ public class GazeAnalysisService {
 
     }
 
-    private static AiServerGazeAnalysisVO executeGazeAnalysis(Long interviewId, String objectKey) {
-        AiServerGazeAnalysisVO response = WebClient.builder()
-                .baseUrl(BASE_URL)
-                .build()
-                .get()
+    private AiServerGazeAnalysisVO executeGazeAnalysis(Long interviewId, String objectKey) {
+        AiServerGazeAnalysisVO response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder.path(GAZE_ANALYSIS_URI)
                         .queryParam("interviewId", interviewId)
                         .queryParam("objectKey", objectKey)
