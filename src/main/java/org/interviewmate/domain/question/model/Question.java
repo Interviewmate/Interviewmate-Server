@@ -4,8 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.behavior.model.BehaviorAnalysis;
-import org.interviewmate.domain.user.model.User;
 
 import javax.persistence.*;
 
