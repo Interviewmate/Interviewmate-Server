@@ -2,8 +2,6 @@ package org.interviewmate.domain.interview.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.interviewmate.debug.user.UserDebugService;
-import org.interviewmate.domain.analysis.model.BehaviorAnalysis;
 import org.interviewmate.domain.analysis.service.BehaviorAnalysisService;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
@@ -17,7 +15,6 @@ import org.interviewmate.domain.interview.model.dto.response.InterviewFindMonthl
 import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
-import org.interviewmate.domain.user.service.UserService;
 import org.interviewmate.global.error.ErrorCode;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +29,6 @@ import java.util.List;
 public class InterviewServiceImpl implements InterviewService{
 
     private final InterviewRepository interviewRepository;
-    private final BehaviorAnalysisService behaviorAnalysisService;
     private final UserRepository userRepository;
 
     /**
@@ -50,7 +46,7 @@ public class InterviewServiceImpl implements InterviewService{
                 .build();
 
         Interview save = interviewRepository.save(interview);
-        return InterviewCreateResponseDto.of(save);
+        return new InterviewCreateResponseDto(save.getInterId());
     }
 
     /**
