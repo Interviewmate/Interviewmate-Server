@@ -71,6 +71,5 @@ public class QuestionService {
         return response.stream()
                 .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId+1).orElseThrow()))
                 .collect(Collectors.toList());
-
     }
 }
