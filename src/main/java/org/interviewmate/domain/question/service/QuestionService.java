@@ -68,8 +68,10 @@ public class QuestionService {
                 })
                 .block();
 
-        return response.stream()
-                .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId+1).orElseThrow()))
+        List<QuestionInfoDto> questionInfoDtoList = response.stream()
+                .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId + 1).orElse(null)))
                 .collect(Collectors.toList());
+        questionInfoDtoList.remove(null);
+        return questionInfoDtoList;
     }
 }
