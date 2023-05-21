@@ -44,7 +44,6 @@ public class InterviewServiceImpl implements InterviewService{
     public InterviewCreateResponseDto createInterview(InterviewCreateRequestDto dto) {
 
         User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new InterviewException(ErrorCode.NOT_EXIST_USER));
-        BehaviorAnalysis behaviorAnalysis = behaviorAnalysisService.createBehaviorAnalysis();
 
         Interview interview = Interview.builder()
                 .user(user)
