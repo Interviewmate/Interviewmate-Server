@@ -26,10 +26,10 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class BehaviorAnalysisService {
 
-    @Value("{$ai-model.url}")
+    @Value("{$ai.url}")
     private String baseUrl;
 
-    @Value("{$ai-model.uri.analysis.behavior}")
+    @Value("{$ai.uri.analysis.behavior}")
     private String behaviorAnalysisUri;
 
     private final InterviewRepository interviewRepository;
