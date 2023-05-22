@@ -22,8 +22,10 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class GazeAnalysisService {
 
-    @Value("{$ai-model.analysis.gaze}")
-    private String GAZE_ANALYSIS_URI;
+    @Value("{$ai-model.uri.analysis.gaze}")
+    private String baseUrl;
+    @Value("{$ai-model.uri.analysis.gaze}")
+    private String gazeAnalysisUri;
 
     private final InterviewRepository interviewRepository;
     private final GazeAnalysisRepository gazeAnalysisRepository;
@@ -48,8 +50,11 @@ public class GazeAnalysisService {
     }
 
     private AiServerGazeAnalysisVO executeGazeAnalysis(Long interviewId, String objectKey) {
-        AiServerGazeAnalysisVO response = WebClient.create().get()
-                .uri(uriBuilder -> uriBuilder.path(GAZE_ANALYSIS_URI)
+        AiServerGazeAnalysisVO response = WebClient.builder()
+                .baseUrl(baseUrl)
+                .build()
+                .get()
+                .uri(uriBuilder -> uriBuilder.path(gazeAnalysisUri)
                         .queryParam("interviewId", interviewId)
                         .queryParam("objectKey", objectKey)
                         .build())
