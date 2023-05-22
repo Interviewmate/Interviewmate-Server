@@ -3,6 +3,7 @@ package org.interviewmate.domain.user.service;
 import static org.interviewmate.global.common.BaseStatus.ACTIVE;
 import static org.interviewmate.global.error.ErrorCode.DUPLICATE_NICKNAME;
 import static org.interviewmate.global.error.ErrorCode.FAIL_TO_LOGIN;
+import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_USER;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.Authority;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.model.dto.request.PostUserReqDto;
+import org.interviewmate.domain.user.model.dto.response.FindUserInformationOutDto;
 import org.interviewmate.domain.user.model.dto.response.PostUserResDto;
 import org.interviewmate.domain.user.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,5 +73,14 @@ public class UserService {
         }
 
         return "생성 가능한 닉네임입니다.";
+    }
+
+    public FindUserInformationOutDto getUserInfo(Long userId) {
+
+        User findUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(NOT_EXIST_USER));
+
+        return FindUserInformationOutDto.of(findUser);
+
     }
 }
