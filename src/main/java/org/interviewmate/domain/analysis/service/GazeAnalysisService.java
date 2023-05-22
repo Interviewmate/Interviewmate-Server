@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class GazeAnalysisService {
 
-    @Value("{$ai-model.uri.analysis.gaze}")
+    @Value("{$ai-model.url}")
     private String baseUrl;
     @Value("{$ai-model.uri.analysis.gaze}")
     private String gazeAnalysisUri;
