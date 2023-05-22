@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
@@ -69,9 +70,10 @@ public class QuestionService {
                 .block();
 
         List<QuestionInfoDto> questionInfoDtoList = response.stream()
-                .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId + 1).orElse(null)))
+                .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId+1).orElse(null)))
                 .collect(Collectors.toList());
-        questionInfoDtoList.remove(null);
+        questionInfoDtoList.removeAll(Collections.singletonList(null));
+
         return questionInfoDtoList;
     }
 }
