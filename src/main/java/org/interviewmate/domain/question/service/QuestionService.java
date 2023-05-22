@@ -58,7 +58,7 @@ public class QuestionService {
         List<Long> response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder
                         .path(questionUri)
-                        .queryParam("questionNum", dto.getQuestionNum())
+                        .queryParam("questionNum", dto.getQuestionNum()+1)
                         .queryParam("userKeyword", String.join(",", dto.getUserKeyword()))
                         .queryParam("portfolioKeyword", String.join(",", dto.getPortfolioKeyword()))
                         .queryParam("job", dto.getJob())
