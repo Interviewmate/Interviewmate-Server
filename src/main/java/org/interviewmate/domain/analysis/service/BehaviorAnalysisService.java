@@ -26,8 +26,11 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class BehaviorAnalysisService {
 
-    @Value("{$ai-model.analysis.behavior}")
-    private String BEHAVIOR_ANALYSIS_URI = "/behavior_analysis";
+    @Value("{$ai-model.url}")
+    private String baseUrl;
+
+    @Value("{$ai-model.uri.analysis.behavior}")
+    private String behaviorAnalysisUri;
 
     private final InterviewRepository interviewRepository;
     private final BehaviorAnalysisRepository behaviorAnalysisRepository;
@@ -52,8 +55,11 @@ public class BehaviorAnalysisService {
 
     private AiServerBehaviorAnalysisVO executeBehaviorAnalysis(Long interviewId, String objectKey) {
 
-        AiServerBehaviorAnalysisVO response = WebClient.create().get()
-                .uri(uriBuilder -> uriBuilder.path(BEHAVIOR_ANALYSIS_URI)
+        AiServerBehaviorAnalysisVO response = WebClient.builder()
+                .baseUrl(baseUrl)
+                .build()
+                .get()
+                .uri(uriBuilder -> uriBuilder.path(behaviorAnalysisUri)
                         .queryParam("interviewId", interviewId)
                         .queryParam("objectKey", objectKey)
                         .build())
