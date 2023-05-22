@@ -30,7 +30,7 @@ public class QuestionApiController {
     })
     @Parameters({
             @Parameter(name = "userId", description = "user의 id", example = "1"),
-            @Parameter(name = "questionNum", description = "yyyy-MM 형식의 조회하고자 하는 year, month", example = "2023-05"),
+            @Parameter(name = "questionNum", description = "질문 개수", example = "10"),
             @Parameter(name = "csKeyword", description = "사용자가 면접 전 선택한 cs 키워드 리스트", example = "[ALGORITHM, NETWORK]")
     })
     @GetMapping("/{userId}")
