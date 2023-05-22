@@ -39,7 +39,7 @@ public class BehaviorAnalysisService {
         Interview findInterview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new InterviewException(NOT_FOUND_DATA));
 
-        AiServerBehaviorAnalysisVO response = executeBehaviorAnalysis(findInterview.getInterId(), objectKey);
+        AiServerBehaviorAnalysisVO response = executeBehaviorAnalysis(objectKey);
 
         List<BehaviorAnalysis> behaviorAnalyses = response.getAiServerBehaviorAnalysisResults().stream()
                 .map(result -> BehaviorAnalysis.builder()
@@ -53,15 +53,14 @@ public class BehaviorAnalysisService {
 
     }
 
-    private AiServerBehaviorAnalysisVO executeBehaviorAnalysis(Long interviewId, String objectKey) {
+    private AiServerBehaviorAnalysisVO executeBehaviorAnalysis(String objectKey) {
 
         AiServerBehaviorAnalysisVO response = WebClient.builder()
                 .baseUrl(baseUrl)
                 .build()
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(behaviorAnalysisUri)
-                        .queryParam("interviewId", interviewId)
-                        .queryParam("objectKey", objectKey)
+                        .queryParam("object_key", objectKey)
                         .build())
                 .retrieve()
                 .onStatus(

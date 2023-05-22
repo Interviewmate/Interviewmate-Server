@@ -34,7 +34,7 @@ public class GazeAnalysisService {
         Interview findInterview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new InterviewException(NOT_FOUND_DATA));
 
-        AiServerGazeAnalysisVO response = executeGazeAnalysis(findInterview.getInterId(), objectKey);
+        AiServerGazeAnalysisVO response = executeGazeAnalysis(objectKey);
         List<GazeAnalysis> gazeAnalyses = response.getAiServerGazeAnalysisResult().stream()
                 .map(
                         result -> GazeAnalysis.builder()
@@ -49,14 +49,13 @@ public class GazeAnalysisService {
 
     }
 
-    private AiServerGazeAnalysisVO executeGazeAnalysis(Long interviewId, String objectKey) {
+    private AiServerGazeAnalysisVO executeGazeAnalysis(String objectKey) {
         AiServerGazeAnalysisVO response = WebClient.builder()
                 .baseUrl(baseUrl)
                 .build()
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(gazeAnalysisUri)
-                        .queryParam("interviewId", interviewId)
-                        .queryParam("objectKey", objectKey)
+                        .queryParam("object_key", objectKey)
                         .build())
                 .retrieve()
                 .onStatus(
