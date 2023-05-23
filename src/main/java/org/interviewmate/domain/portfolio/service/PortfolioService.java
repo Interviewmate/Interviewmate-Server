@@ -6,6 +6,7 @@ import org.interviewmate.domain.portfolio.exception.PortfolioException;
 import org.interviewmate.domain.portfolio.model.Portfolio;
 import org.interviewmate.domain.portfolio.model.dto.request.PortfolioGetKeywordRequestDto;
 import org.interviewmate.domain.portfolio.model.dto.response.PortfolioAiServerResponseDto;
+import org.interviewmate.domain.portfolio.model.dto.response.PortfolioCheckExisitResponseDto;
 import org.interviewmate.domain.portfolio.repository.PortfolioRepository;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
@@ -51,6 +52,14 @@ public class PortfolioService {
         log.info("portfolio.getkeyword: {}",portfolio.getKeywords());
 
         portfolioRepository.save(portfolio);
+    }
+
+    public PortfolioCheckExisitResponseDto isExisitPortfolio(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
+        if (portfolioRepository.findByUser(user).isPresent()) {
+            return new PortfolioCheckExisitResponseDto(true);
+        }
+        return new PortfolioCheckExisitResponseDto(false);
     }
     
     private List<String> sendRequestToAiServer(String url, Long userId){ //ai 서버로 키워드 추출 요청
