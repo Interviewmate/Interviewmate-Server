@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.debug.baseentity.TestService;
+import org.interviewmate.domain.analysis.service.AnswerAnalysisService;
 import org.interviewmate.domain.portfolio.service.PortfolioService;
 import org.interviewmate.global.error.ErrorCode;
 import org.interviewmate.global.error.exception.CustomException;
@@ -24,6 +25,7 @@ public class TestController {
 
     private final TestService testService;
     private final PortfolioService portfolioService;
+    private final AnswerAnalysisService answerAnalysisService;
 
     @GetMapping("/success")
     public ResponseEntity<ResponseDto<ArrayList>> successRepsonseTest() {
@@ -64,5 +66,13 @@ public class TestController {
                                                                @RequestParam("url") String url) {
         portfolioService.createPortfolio(userId, url);
         return ResponseUtil.SUCCESS(ResponseCode.SUCCESS, null);
+    }
+
+    @GetMapping("/answer_analysis")
+    public ResponseEntity<ResponseDto<String>> createAnswerAnalysis(@RequestParam("interviewId") Long interviewId,
+                                                                    @RequestParam("questionId") Long questionId,
+                                                                    @RequestParam("objectKey") String objectKey) {
+        answerAnalysisService.createAnswerAnalysis(interviewId, questionId, objectKey);
+        return ResponseUtil.SUCCESS(ResponseCode.SUCCESS, "");
     }
 }
