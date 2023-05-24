@@ -6,6 +6,7 @@ import org.interviewmate.domain.portfolio.exception.PortfolioException;
 import org.interviewmate.domain.portfolio.model.Portfolio;
 import org.interviewmate.domain.portfolio.model.dto.request.PortfolioGetKeywordRequestDto;
 import org.interviewmate.domain.portfolio.model.dto.response.PortfolioAiServerResponseDto;
+import org.interviewmate.domain.portfolio.model.dto.response.PortfolioCheckExisitResponseDto;
 import org.interviewmate.domain.portfolio.repository.PortfolioRepository;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
@@ -25,20 +26,35 @@ import java.util.List;
 @Transactional
 @RequiredArgsConstructor
 public class PortfolioService {
+
     private final PortfolioRepository portfolioRepository;
     private final UserRepository userRepository;
+
     @Value("${ai-model.url.portfolio.keyword}")
     private String keywordUri;
 
     // todo: createPortfolio는 debug 위한 메서드. s3 service에서 구현되면 삭제해야 함
-    public void createPortfolio(Long userId, String url) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
+    public void createPortfolio(Long userId, String objectUrl) {
 
-        Portfolio portfolio = portfolioRepository.save(Portfolio.builder()
-                .url(url)
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
+
+        Portfolio portfolio = portfolioRepository.findByUser(user).orElse(null);
+
+        if (portfolio != null) {
+            portfolio.setUrl(objectUrl);
+            portfolioRepository.save(portfolio);
+            return;
+        }
+
+        portfolio = Portfolio.builder()
                 .user(user)
-                .build());
+                .url(objectUrl)
+                .build();
+
         portfolioRepository.save(portfolio);
+
+        return;
     }
 
     public void getKeyword(PortfolioGetKeywordRequestDto dto) {
@@ -51,6 +67,14 @@ public class PortfolioService {
         log.info("portfolio.getkeyword: {}",portfolio.getKeywords());
 
         portfolioRepository.save(portfolio);
+    }
+
+    public PortfolioCheckExisitResponseDto isExisitPortfolio(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
+        if (portfolioRepository.findByUser(user).isPresent()) {
+            return new PortfolioCheckExisitResponseDto(true);
+        }
+        return new PortfolioCheckExisitResponseDto(false);
     }
     
     private List<String> sendRequestToAiServer(String url, Long userId){ //ai 서버로 키워드 추출 요청

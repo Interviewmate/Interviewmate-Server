@@ -20,15 +20,16 @@ public class Portfolio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long portfolioId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Column(columnDefinition = "TEXT")
     private String url;
 
     @Column(columnDefinition = "TEXT")
     @Convert(converter = StringArrayConverter.class)
     private List<String> keywords;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
 
     @Builder
     public Portfolio(String url, User user) {
