@@ -36,6 +36,20 @@ public class PortfolioApiController {
         return ResponseUtil.SUCCESS(SUCCESS, "키워드 추출 완료");
     }
 
+    @Operation(summary = "포트폴리오 등록", description = "S3에 포트폴리오를 업로드 한 포트폴리오에 대한 객체를 생성합니다.")
+    @Parameters({
+            @Parameter(name = "userId", description = "유저 식별자"),
+            @Parameter(name = "objectUrl", description = "객체 Url", example = "https://interviewmate.s3.ap-northeast-2.amazonaws.com/portfolio/4/12ebfbe8-63bd-4f8c-b088-5c2255da2f63")
+    })
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<ResponseDto<String>> createPortfolio(
+            @PathVariable Long userId,
+            @RequestParam String objectUrl
+    ) {
+        portfolioService.createPortfolio(userId, objectUrl);
+        return ResponseUtil.SUCCESS(SUCCESS, "포트폴리오 등록 완료");
+    }
+
     @Operation(summary = "포트폴리오 유무 확인 요청", description = "pathVariable (Long userId) 을 이용해 해당 유저에게 포트폴리오가 있는지 확인합니다.", responses = {
             @ApiResponse(responseCode = "200", description = "포트폴리오 유무 확인 성공")
     })
@@ -46,4 +60,5 @@ public class PortfolioApiController {
     public ResponseEntity<ResponseDto<PortfolioCheckExisitResponseDto>> checkPortfolioIsExist(@PathVariable("userId") Long userId) {
         return ResponseUtil.SUCCESS(SUCCESS, portfolioService.isExisitPortfolio(userId));
     }
+
 }
