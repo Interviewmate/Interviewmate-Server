@@ -23,7 +23,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class S3Service {
 
-    private final Long EXPIRATION_TIME = Duration.ofSeconds(30).toMillis();
+    private final Long EXPIRATION_TIME = Duration.ofMinutes(60).toMillis();
     private final AmazonS3 amazonS3;
     private final RedisInterviewVideoRepository redisInterviewVideoRepository;
 
