@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.analysis.service.AnalysisService;
 import org.interviewmate.domain.analysis.service.AnswerAnalysisService;
-import org.interviewmate.domain.analysis.service.BehaviorAnalysisService;
-import org.interviewmate.domain.analysis.service.GazeAnalysisService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AnalysisController {
 
     private final AnalysisService analysisService;
-    private final GazeAnalysisService gazeAnalysisService;
-    private final BehaviorAnalysisService behaviorAnalysisService;
     private final AnswerAnalysisService answerAnalysisService;
 
     @Operation(summary = "분석 요청 API", description = "1개 면접 질문 영상에 대한 시선, 자세, 답변 분석 요청")
