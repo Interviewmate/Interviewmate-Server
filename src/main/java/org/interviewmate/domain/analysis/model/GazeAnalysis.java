@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,18 +30,18 @@ public class GazeAnalysis extends BaseEntity {
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
-    private Long start;
+    private String startTime;
 
-    private Long end;
+    private String endTime;
 
-    private Long duringTIme;
+    private String duringTime;
 
     @Builder
-    public GazeAnalysis(Interview interview, Long start, Long end, Long duringTIme) {
+    public GazeAnalysis(Interview interview, String startTime, String endTime, String duringTime) {
         this.interview = interview;
-        this.start = start;
-        this.end = end;
-        this.duringTIme = duringTIme;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duringTime = duringTime;
     }
 
 }

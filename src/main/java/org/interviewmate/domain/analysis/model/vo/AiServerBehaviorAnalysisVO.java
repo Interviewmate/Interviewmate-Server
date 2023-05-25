@@ -5,14 +5,18 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.analysis.model.AiServerBehaviorAnalysisResult;
-import org.interviewmate.domain.analysis.model.AiServerGazeAnalysisResult;
 
 @Getter
 @NoArgsConstructor
-public class AiServerBehaviorAnalysisVO {
+public class  AiServerBehaviorAnalysisVO {
 
-    @JsonProperty("unstable_list")
-    private List<AiServerBehaviorAnalysisResult> aiServerBehaviorAnalysisResults = new ArrayList<>();
+    @JsonProperty("gazeInfo")
+    private AiServerGazeAnalysisResultVO gazeAnalysisResults;
+
+    @JsonProperty("poseInfo")
+    private AiServerPoseAnalysisResultVO poseAnalysisResults;
+
+    @JsonProperty("video_duration")
+    private Double videoDuration;
 
 }
