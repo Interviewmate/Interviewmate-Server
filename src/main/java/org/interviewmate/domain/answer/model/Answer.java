@@ -20,6 +20,8 @@ public class Answer {
 
     @Column(columnDefinition = "TEXT")
     private String content;
+    @Column(columnDefinition = "TEXT")
+    private String answerAnalysis;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "inter_id")
@@ -30,9 +32,10 @@ public class Answer {
     private Question question;
 
     @Builder
-    public Answer(String content, Interview interview, Question question) {
+    public Answer(String content, Interview interview, Question question, String answerAnalysis) {
         this.content = content;
         this.interview = interview;
         this.question = question;
+        this.answerAnalysis = answerAnalysis;
     }
 }

@@ -61,7 +61,9 @@ public class PortfolioService {
         User user = userRepository.findById(dto.getUserId()).orElseThrow(() -> new PortfolioException(ErrorCode.NOT_EXIST_USER));
         Portfolio portfolio = portfolioRepository.findByUser(user).orElseThrow(() -> new PortfolioException(ErrorCode.PORTFOLIO_NOT_FOUND));
 
-        List<String> keywords = sendRequestToAiServer(portfolio.getUrl(), dto.getUserId());
+        //https://interviewmate.s3.ap-northeast-2.amazonaws.com/ 제거 54자
+        String url = portfolio.getUrl().substring(54, portfolio.getUrl().length());
+        List<String> keywords = sendRequestToAiServer(url, dto.getUserId());
         portfolio.setKeyword(keywords);
 
         log.info("portfolio.getkeyword: {}",portfolio.getKeywords());

@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum TokenType {
 
-    ACCESS_TOKEN("access", Duration.ofMinutes(30).toMillis()),
+    ACCESS_TOKEN("access", Duration.ofMinutes(60).toMillis()),
     REFRESH_TOKEN("refresh",Duration.ofDays(7).toMillis());
 
     private final String name;
