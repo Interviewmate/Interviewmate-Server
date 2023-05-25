@@ -12,28 +12,28 @@ import org.interviewmate.global.common.BaseEntity;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BehaviorAnalysis extends BaseEntity{
+public class PoseAnalysis extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "behavior_analysis_id")
-    private Long beId;
+    @Column(name = "pose_analysis_id")
+    private Long poseId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
-    private Long start;
+    private String startTime;
 
-    private Long end;
+    private String endTime;
 
-    private Long duringTIme;
+    private String duringTime;
 
     @Builder
-    public BehaviorAnalysis(Interview interview, Long start, Long end, Long duringTIme) {
+    public PoseAnalysis(Interview interview, String startTime, String endTime, String duringTime) {
         this.interview = interview;
-        this.start = start;
-        this.end = end;
-        this.duringTIme = duringTIme;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.duringTime = duringTime;
     }
 
 }

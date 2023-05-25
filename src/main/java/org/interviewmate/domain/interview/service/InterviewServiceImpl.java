@@ -2,7 +2,6 @@ package org.interviewmate.domain.interview.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.interviewmate.domain.analysis.service.BehaviorAnalysisService;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;

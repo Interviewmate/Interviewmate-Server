@@ -7,8 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.interviewmate.domain.analysis.service.BehaviorAnalysisService;
-import org.interviewmate.domain.analysis.service.GazeAnalysisService;
+import org.interviewmate.domain.analysis.service.AnalysisService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -26,8 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/analyses")
 public class AnalysisController {
 
-    private final GazeAnalysisService gazeAnalysisService;
-    private final BehaviorAnalysisService behaviorAnalysisService;
+    private final AnalysisService analysisService;
 
     @Operation(summary = "분석 요청 API", description = "1개 면접 질문 영상에 대한 시선, 자세, 답변 분석 요청")
     @Parameters({
@@ -37,10 +35,18 @@ public class AnalysisController {
     @PostMapping("/{interviewId}")
     public ResponseEntity<ResponseDto<String>> createAnalysis(@PathVariable Long interviewId, @RequestParam String objectKey) {
 
-        gazeAnalysisService.createGazeAnalysis(interviewId, objectKey);
-        behaviorAnalysisService.createBehaviorAnalysis(interviewId, objectKey);
-        // todo: 답변 분석
+        analysisService.processBehaviorAnalysis(interviewId, objectKey);
+        return ResponseUtil.SUCCESS(SUCCESS, "");
 
+    }
+
+    @Operation(summary = "종합 분석 API", description = "모든 면접 질문 영상에 대한 분석")
+    @Parameters({
+            @Parameter(name = "userId", description = "인터뷰 식별자"),
+    })
+    @GetMapping("/{userId}")
+    public ResponseEntity<ResponseDto<String>> processComprehensiveAnalysis(@PathVariable Long userId) {
+        analysisService.processComprehensiveAnalysis(userId);
         return ResponseUtil.SUCCESS(SUCCESS, "");
     }
 

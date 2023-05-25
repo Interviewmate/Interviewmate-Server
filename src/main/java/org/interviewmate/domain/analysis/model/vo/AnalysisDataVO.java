@@ -1,4 +1,4 @@
-package org.interviewmate.domain.analysis.model;
+package org.interviewmate.domain.analysis.model.vo;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -6,19 +6,19 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class AiServerBehaviorAnalysisResult {
+public class AnalysisDataVO {
 
     //private Long outInId;
 
-    private Long outSec;
+    private Double startSec;
 
-    //private Long outFrame;
+    //private Long start_Frame;
 
-    private Long inSec;
+    private Double endSec;
 
-    //private Long in_Frame;
+    //private Long endFrame;
 
-    private Long duringSec;
+    private Double duringSec;
 
     //private Long duringFrame;
 

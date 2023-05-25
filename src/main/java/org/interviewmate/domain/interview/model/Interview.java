@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.analysis.model.BehaviorAnalysis;
+import org.interviewmate.domain.analysis.model.PoseAnalysis;
 import org.interviewmate.domain.analysis.model.GazeAnalysis;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.global.common.BaseEntity;
@@ -26,8 +26,10 @@ public class Interview extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private BehaviorAnalysis behaviorAnalysis;
+    private String videoDuration;
+
+    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<PoseAnalysis> poseAnalysis;
 
     @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<GazeAnalysis> gazeAnalyses;
@@ -37,11 +39,16 @@ public class Interview extends BaseEntity {
         this.user = user;
     }
 
-    public void setBehaviorAnalysis(BehaviorAnalysis behaviorAnalysis) {
-        this.behaviorAnalysis = behaviorAnalysis;
+    public void setPoseAnalysis(List<PoseAnalysis> poseAnalysis) {
+        this.poseAnalysis = poseAnalysis;
     }
 
     public void setGazeAnalysis(List<GazeAnalysis> gazeAnalyses) {
         this.gazeAnalyses = gazeAnalyses;
     }
+
+    public void setVideoDuration(String videoDuration) {
+        this.videoDuration = videoDuration;
+    }
+
 }
