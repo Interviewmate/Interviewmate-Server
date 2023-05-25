@@ -22,6 +22,7 @@ import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +40,8 @@ public class AnalysisService {
     private final PoseAnalysisRepository poseAnalysisRepository;
     private final GazeAnalysisRepository gazeAnalysisRepository;
 
-    private String behaviorAnalysisUri = "ec2-43-201-233-187.ap-northeast-2.compute.amazonaws.com:5000/behavior_analysis";
+    @Value("${ai-model.url.analysis.behavior}")
+    private String behaviorAnalysisUri;
 
     public void processComprehensiveAnalysis(Long userId) {
 
