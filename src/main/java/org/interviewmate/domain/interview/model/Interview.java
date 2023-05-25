@@ -34,6 +34,9 @@ public class Interview extends BaseEntity {
     @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<GazeAnalysis> gazeAnalyses;
 
+    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<InterviewVideo> interviewVideos;
+
     @Builder
     public Interview(User user) {
         this.user = user;
