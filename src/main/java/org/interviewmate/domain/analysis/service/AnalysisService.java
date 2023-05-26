@@ -11,14 +11,19 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.analysis.exception.AnalysisException;
+import org.interviewmate.domain.analysis.model.AnalysisData;
 import org.interviewmate.domain.analysis.model.PoseAnalysis;
 import org.interviewmate.domain.analysis.model.GazeAnalysis;
+import org.interviewmate.domain.analysis.model.dto.response.BehaviorAnalysisFindOutDto;
 import org.interviewmate.domain.analysis.model.vo.AiServerBehaviorAnalysisVO;
 import org.interviewmate.domain.analysis.repository.PoseAnalysisRepository;
 import org.interviewmate.domain.analysis.repository.GazeAnalysisRepository;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
+import org.interviewmate.domain.interview.model.InterviewVideo;
+import org.interviewmate.domain.interview.model.vo.InterviewVideoVo;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
+import org.interviewmate.domain.interview.repository.InterviewVideoRepository;
 import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
@@ -37,6 +42,7 @@ public class AnalysisService {
 
     private final UserRepository userRepository;
     private final InterviewRepository interviewRepository;
+    private final InterviewVideoRepository interviewVideoRepository;
     private final PoseAnalysisRepository poseAnalysisRepository;
     private final GazeAnalysisRepository gazeAnalysisRepository;
 
@@ -53,12 +59,12 @@ public class AnalysisService {
         List<PoseAnalysis> behaviorAnalyses = new ArrayList<>();
         List<GazeAnalysis> gazeAnalyses = new ArrayList<>();
 
-        findInterview.stream()
-                .forEach(interview -> {
-                    behaviorAnalyses.add(poseAnalysisRepository.findAllByInterview(interview));
-                    gazeAnalysisRepository.findAllByInterview(interview).stream()
-                            .forEach(gazeAnalysis -> gazeAnalyses.add(gazeAnalysis));
-                });
+//        findInterview.stream()
+//                .forEach(interview -> {
+//                    behaviorAnalyses.add(poseAnalysisRepository.findAllByInterview(interview));
+//                    gazeAnalysisRepository.findAllByInterview(interview).stream()
+//                            .forEach(gazeAnalysis -> gazeAnalyses.add(gazeAnalysis));
+//                });
 
     }
 
@@ -120,4 +126,35 @@ public class AnalysisService {
 
     }
 
+    public BehaviorAnalysisFindOutDto findCreateAnalysis(Long interviewId) {
+
+        Interview findInterview = interviewRepository.findById(interviewId)
+                .orElseThrow(() -> new InterviewException(NOT_FOUND_DATA));
+
+        List<InterviewVideoVo> interviewVideos = interviewVideoRepository.findAllByInterview(findInterview).stream()
+                .map(interviewVideo -> InterviewVideoVo.builder()
+                        .url(interviewVideo.getUrl())
+                        .question(interviewVideo.getQuestion().getQuestion())
+                        .build())
+                .collect(Collectors.toList());
+
+        List<AnalysisData> gazeAnalyses = gazeAnalysisRepository.findAllByInterview(findInterview).stream()
+                .map(gazeAnalysis -> AnalysisData.builder()
+                        .startSec(Double.valueOf(gazeAnalysis.getStartTime()))
+                        .endSec(Double.valueOf(gazeAnalysis.getEndTime()))
+                        .duringSec(Double.valueOf(gazeAnalysis.getDuringTime()))
+                        .build())
+                .collect(Collectors.toList());
+
+        List<AnalysisData> poseAnalyses = poseAnalysisRepository.findAllByInterview(findInterview).stream()
+                .map(poseAnalysis -> AnalysisData.builder()
+                        .startSec(Double.valueOf(poseAnalysis.getStartTime()))
+                        .endSec(Double.valueOf(poseAnalysis.getEndTime()))
+                        .duringSec(Double.valueOf(poseAnalysis.getDuringTime()))
+                        .build())
+                .collect(Collectors.toList());
+
+        return BehaviorAnalysisFindOutDto.of(interviewVideos, gazeAnalyses, poseAnalyses);
+
+    }
 }
