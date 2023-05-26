@@ -33,24 +33,21 @@ public class Interview extends BaseEntity {
     private Double videoDuration;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pose_analysis_id")
-    private PoseAnalysis poseAnalysis;
-
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gaze_analysis_id")
     private GazeAnalysis gazeAnalysis;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pose_analysis_id")
+    private PoseAnalysis poseAnalysis;
 
     @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<InterviewVideo> interviewVideos;
 
     @Builder
-    public Interview(User user) {
+    public Interview(User user, GazeAnalysis gazeAnalysis, PoseAnalysis poseAnalysis) {
         this.user = user;
-    }
-
-    public void setAnalysis(PoseAnalysis poseAnalysis, GazeAnalysis gazeAnalysis) {
-        this.poseAnalysis = poseAnalysis;
         this.gazeAnalysis = gazeAnalysis;
+        this.poseAnalysis = poseAnalysis;
     }
 
     public void setScore(double gazeScore, double poseScore) {

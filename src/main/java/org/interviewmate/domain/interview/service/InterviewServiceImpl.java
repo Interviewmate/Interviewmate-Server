@@ -2,6 +2,10 @@ package org.interviewmate.domain.interview.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.interviewmate.domain.analysis.model.GazeAnalysis;
+import org.interviewmate.domain.analysis.model.PoseAnalysis;
+import org.interviewmate.domain.analysis.repository.GazeAnalysisRepository;
+import org.interviewmate.domain.analysis.repository.PoseAnalysisRepository;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.dto.request.InterviewCreateRequestDto;
@@ -15,6 +19,7 @@ import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
 import org.interviewmate.global.error.ErrorCode;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.*;
@@ -29,6 +34,8 @@ public class InterviewServiceImpl implements InterviewService{
 
     private final InterviewRepository interviewRepository;
     private final UserRepository userRepository;
+    private final GazeAnalysisRepository gazeAnalysisRepository;
+    private final PoseAnalysisRepository poseAnalysisRepository;
 
     /**
      * 면접 생성
@@ -42,6 +49,8 @@ public class InterviewServiceImpl implements InterviewService{
 
         Interview interview = Interview.builder()
                 .user(user)
+                .gazeAnalysis(gazeAnalysisRepository.save(GazeAnalysis.builder().build()))
+                .poseAnalysis(poseAnalysisRepository.save(PoseAnalysis.builder().build()))
                 .build();
 
         Interview save = interviewRepository.save(interview);
