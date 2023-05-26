@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.global.util.converter.StringArrayConverter;
 import javax.persistence.*;
 import java.util.List;
@@ -13,18 +14,25 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long questionId;
+
     private String keyword;
+
     @Column(columnDefinition = "TEXT")
     private String question;
+
     @Column(columnDefinition = "TEXT")
     private String bestAnswer;
 
     @Column(columnDefinition = "TEXT")
     @Convert(converter = StringArrayConverter.class)
     private List<String> questionToken;
+
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<InterviewVideo> interviewVideos;
 
     @Builder
     public Question(String keyword, String question, String bestAnswer, List<String> questionToken) {
