@@ -2,7 +2,6 @@ package org.interviewmate.domain.answer.service;
 
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.answer.exception.AnswerException;
-import org.interviewmate.domain.answer.model.Answer;
 import org.interviewmate.domain.answer.model.dto.AnswerInfoDto;
 import org.interviewmate.domain.answer.model.dto.response.AnswerGetListResponseDto;
 import org.interviewmate.domain.answer.repository.AnswerRepository;
