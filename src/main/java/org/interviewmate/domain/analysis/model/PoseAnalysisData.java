@@ -6,13 +6,11 @@ import lombok.Getter;
 
 import javax.persistence.*;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.InterviewVideo;
-import org.interviewmate.global.common.BaseEntity;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PoseAnalysisData {
 
     @Id

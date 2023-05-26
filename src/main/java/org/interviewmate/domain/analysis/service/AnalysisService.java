@@ -96,6 +96,7 @@ public class AnalysisService {
         List<PoseAnalysisData> poseAnalyses = response.getPoseAnalysisResults().getAnalysisData().stream()
                 .map(
                         data -> PoseAnalysisData.builder()
+                                .poseAnalysis(poseAnalysis)
                                 .interviewVideo(findVideo)
                                 .startTime(data.getStartSec())
                                 .endTime(data.getEndSec())
@@ -107,6 +108,7 @@ public class AnalysisService {
         List<GazeAnalysisData> gazeAnalyses = response.getGazeAnalysisResults().getAnalysisData().stream()
                 .map(
                         data -> GazeAnalysisData.builder()
+                                .gazeAnalysis(gazeAnalysis)
                                 .interviewVideo(findVideo)
                                 .startTime(data.getStartSec())
                                 .endTime(data.getEndSec())
