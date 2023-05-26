@@ -4,6 +4,7 @@ import static org.interviewmate.global.util.response.ResponseCode.CREATED;
 import static org.interviewmate.global.util.response.ResponseCode.SUCCESS;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +30,13 @@ public class InterviewVideoController {
     private final InterviewVideoService interviewVideoService;
 
     @Operation(summary = "면접 비디오 URL 등록", description = "S3에 업로드 한 면접 비디오에 대한 주소를 등록")
-    @PostMapping("/interview/{interviewId}")
+    @PostMapping("/interview/{interviewId}/question/{questiondId}")
     public ResponseEntity<ResponseDto<String>> createInterviewVideo(
            @PathVariable Long interviewId,
+           @Parameter Long questionId,
            @RequestParam String url
     ) {
-        interviewVideoService.createInterviewVideo(interviewId, url);
+        interviewVideoService.createInterviewVideo(interviewId, questionId, url);
         return ResponseUtil.SUCCESS(CREATED, "등록 완료");
     }
 
