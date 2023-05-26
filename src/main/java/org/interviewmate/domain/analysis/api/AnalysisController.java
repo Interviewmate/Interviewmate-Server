@@ -5,6 +5,7 @@ import static org.interviewmate.global.util.response.ResponseCode.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -65,6 +66,18 @@ public class AnalysisController {
     public ResponseEntity<ResponseDto<String>> processComprehensiveAnalysis(@PathVariable Long userId) {
         analysisService.processComprehensiveAnalysis(userId);
         return ResponseUtil.SUCCESS(SUCCESS, "");
+    }
+
+    @Operation(summary = "분석 완료 여부 확인 API", description = "인터뷰 전체 영상의 분석이 완료됐는지 확인하는 API")
+    @Parameters({
+            @Parameter(name = "interviewId", description = "인터뷰 식별자"),
+    })
+    @ApiResponse(responseCode = "200", description = "true (완료) / false")
+    @GetMapping("/check/{interviewId}")
+    public ResponseEntity<ResponseDto<String>> createAnalysis(@PathVariable Long interviewId) {
+        String analysisDone = answerAnalysisService.isAnalysisDone(interviewId);
+        return ResponseUtil.SUCCESS(SUCCESS, analysisDone);
+
     }
 
 }
