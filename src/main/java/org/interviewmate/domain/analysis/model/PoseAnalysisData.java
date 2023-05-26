@@ -20,7 +20,7 @@ public class PoseAnalysisData {
 
     @ManyToOne
     @JoinColumn(name = "pose_analysis_id")
-    PoseAnalysis poseAnalysis;
+    private PoseAnalysis poseAnalysis;
 
     @OneToOne
     @JoinColumn(name = "interview_video_id")

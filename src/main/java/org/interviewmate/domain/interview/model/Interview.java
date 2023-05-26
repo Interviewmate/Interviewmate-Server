@@ -27,7 +27,9 @@ public class Interview extends BaseEntity {
     private User user;
 
     private Long score;
+
     private Long gazeScore;
+
     private Long poseScore;
 
     private Double videoDuration;
@@ -39,9 +41,6 @@ public class Interview extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pose_analysis_id")
     private PoseAnalysis poseAnalysis;
-
-    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<InterviewVideo> interviewVideos;
 
     @Builder
     public Interview(User user, GazeAnalysis gazeAnalysis, PoseAnalysis poseAnalysis) {

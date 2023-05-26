@@ -21,4 +21,5 @@ public class AnalysisData {
         this.endSec = endSec;
         this.duringSec = duringSec;
     }
+
 }

@@ -1,5 +1,6 @@
 package org.interviewmate.domain.analysis.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -25,14 +26,15 @@ public class GazeAnalysis extends BaseEntity {
     private Interview interview;
 
     @OneToMany(mappedBy = "gazeAnalysis",  cascade = CascadeType.ALL,  orphanRemoval = true)
-    List<GazeAnalysisData> gazeAnalysisData;
+    List<GazeAnalysisData> gazeAnalysisData = new ArrayList<>();
 
     @Builder
     public GazeAnalysis() {
     }
 
     public void setGazeAnalysisData(List<GazeAnalysisData> gazeAnalysisData) {
-        this.gazeAnalysisData = gazeAnalysisData;
+       gazeAnalysisData.clear();
+       getGazeAnalysisData().addAll(gazeAnalysisData);
     }
 
 }

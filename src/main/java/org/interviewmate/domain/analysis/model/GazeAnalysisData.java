@@ -2,7 +2,6 @@ package org.interviewmate.domain.analysis.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,9 +12,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.InterviewVideo;
-import org.interviewmate.global.common.BaseEntity;
 
 @Entity
 @Getter
@@ -29,7 +26,7 @@ public class GazeAnalysisData {
 
     @ManyToOne
     @JoinColumn(name = "gaze_analysis_id")
-    GazeAnalysis gazeAnalysis;
+    private GazeAnalysis gazeAnalysis;
 
     @OneToOne
     @JoinColumn(name = "interview_video_id")
