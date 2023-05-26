@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.interviewmate.domain.analysis.model.dto.response.BehaviorAnalysisFindOutDto;
 import org.interviewmate.domain.analysis.service.AnalysisService;
 import org.interviewmate.domain.analysis.service.AnswerAnalysisService;
 import org.interviewmate.global.util.response.ResponseUtil;
@@ -44,7 +45,17 @@ public class AnalysisController {
         return ResponseUtil.SUCCESS(SUCCESS, "");
 
     }
-  
+
+    @Operation(summary = "행동 분석 조회 API", description = "선택한 면접에 대한 분석 조회")
+    @Parameters({
+            @Parameter(name = "interviewId", description = "인터뷰 식별자"),
+    })
+    @GetMapping("/interview/{interviewId}")
+    public ResponseEntity<ResponseDto<BehaviorAnalysisFindOutDto>> findBehaviorAnalysis(@PathVariable Long interviewId) {
+        BehaviorAnalysisFindOutDto response = analysisService.findCreateAnalysis(interviewId);
+        return ResponseUtil.SUCCESS(SUCCESS, response);
+    }
+
     @Operation(summary = "종합 분석 API", description = "모든 면접 질문 영상에 대한 분석")
     @Parameters({
             @Parameter(name = "userId", description = "인터뷰 식별자"),
