@@ -27,6 +27,8 @@ public class Interview extends BaseEntity {
     private User user;
 
     private Long score;
+    private Long gazeScore;
+    private Long poseScore;
 
     private Double videoDuration;
 
@@ -51,8 +53,10 @@ public class Interview extends BaseEntity {
         this.gazeAnalysis = gazeAnalysis;
     }
 
-    public void setScore(Long score) {
-        this.score = score;
+    public void setScore(double gazeScore, double poseScore) {
+        this.gazeScore = Math.round(gazeScore);
+        this.poseScore = Math.round(poseScore);
+        this.score = Math.round((gazeScore + poseScore) / 2);
     }
 
     public void setVideoDuration(Double videoDuration) {

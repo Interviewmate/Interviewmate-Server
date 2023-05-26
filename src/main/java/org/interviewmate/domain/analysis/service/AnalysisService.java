@@ -27,8 +27,6 @@ import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.interview.repository.InterviewVideoRepository;
-import org.interviewmate.domain.user.exception.UserException;
-import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -56,16 +54,24 @@ public class AnalysisService {
 
     public void processComprehensiveAnalysis(Long userId) {
 
-        User findUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(NOT_EXIST_USER));
-
-        List<Interview> findInterview = interviewRepository.findAllByUser(findUser);
-
-        List<GazeAnalysisData> gazeAnalyses = new ArrayList<>();
-
-//        List<PoseAnalysisData> poseAnalyses =
-
-
+//        User findUser = userRepository.findById(userId)
+//                .orElseThrow(() -> new UserException(NOT_EXIST_USER));
+//
+//        List<Interview> findInterview = interviewRepository.findAllByUser(findUser);
+//        List<GazeAnalysis> gazeAnalyses = findInterview.stream()
+//                .map(Interview::getGazeAnalysis)
+//                .collect(Collectors.toList());
+//
+//        List<AnalysisScoreVO> gazeScore = gazeAnalyses.stream()
+//                .map(gazeAnalysis -> AnalysisScoreVO.builder()
+//                        .interviewId(gazeAnalysis.getInterview().getInterId())
+//                        .score(gazeAnalysis.get))
+//
+//        List<PoseAnalysis> poseAnalyses = findInterview.stream()
+//                .map(Interview::getPoseAnalysis)
+//                .collect(Collectors.toList());
+//
+//        return ComprehensiveAnalysisOutDto.of()
     }
 
     public void processBehaviorAnalysis(Long interviewId, String objectKey) {
@@ -165,12 +171,8 @@ public class AnalysisService {
                                 getScore(poseAnalysisData.getDuringTime(), findInterview.getVideoDuration())
                 ).sum();
 
-        Long score = Math.round((poseScore + gazeScore) / 2);
-        findInterview.setScore(score);
+        findInterview.setScore(gazeScore, poseScore);
         interviewRepository.save(findInterview);
-        log.info(String.valueOf(score));
-
-
 
         return interviewVideos.stream()
                 .map(interviewVideo -> BehaviorAnalysisFindOutDto.of(
