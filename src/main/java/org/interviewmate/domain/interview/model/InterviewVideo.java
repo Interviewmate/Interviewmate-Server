@@ -31,13 +31,13 @@ public class InterviewVideo {
     @JoinColumn(name = "question_id")
     Question question;
 
-    private String Url;
+    private String url;
 
     @Builder
     public InterviewVideo(Interview interview, Question question, String url) {
         this.interview = interview;
         this.question = question;
-        this.Url = url;
+        this.url = url;
     }
 
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.analysis.model.dto.response.BehaviorAnalysisFindOutDto;
 import org.interviewmate.domain.analysis.service.AnalysisService;
@@ -51,8 +52,8 @@ public class AnalysisController {
             @Parameter(name = "interviewId", description = "인터뷰 식별자"),
     })
     @GetMapping("/interview/{interviewId}")
-    public ResponseEntity<ResponseDto<BehaviorAnalysisFindOutDto>> findBehaviorAnalysis(@PathVariable Long interviewId) {
-        BehaviorAnalysisFindOutDto response = analysisService.findCreateAnalysis(interviewId);
+    public ResponseEntity<ResponseDto<List<BehaviorAnalysisFindOutDto>>> findBehaviorAnalysis(@PathVariable Long interviewId) {
+        List<BehaviorAnalysisFindOutDto> response = analysisService.findBehaviorAnalysis(interviewId);
         return ResponseUtil.SUCCESS(SUCCESS, response);
     }
 

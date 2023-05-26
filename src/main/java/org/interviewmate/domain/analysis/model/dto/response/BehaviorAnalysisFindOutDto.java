@@ -13,16 +13,17 @@ import org.interviewmate.domain.interview.model.vo.InterviewVideoVo;
 @Builder(access = AccessLevel.PRIVATE)
 public class BehaviorAnalysisFindOutDto {
 
-    private List<InterviewVideoVo> interviewVideos;
+    private String url;
+    private String question;
     private List<AnalysisData> gazeAnalysis;
     private List<AnalysisData> poseAnalysis;
 
-
     public static BehaviorAnalysisFindOutDto of(
-            List<InterviewVideoVo> interviewVideos, List<AnalysisData> gazeAnalysis, List<AnalysisData> poseAnalysis
+            String url, String question, List<AnalysisData> gazeAnalysis, List<AnalysisData> poseAnalysis
     ) {
        return BehaviorAnalysisFindOutDto.builder()
-               .interviewVideos(interviewVideos)
+               .url(url)
+               .question(question)
                .gazeAnalysis(gazeAnalysis)
                .poseAnalysis(poseAnalysis)
                .build();
