@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.analysis.model.PoseAnalysis;
 import org.interviewmate.domain.analysis.model.GazeAnalysis;
+import org.interviewmate.domain.analysis.model.PoseAnalysis;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.global.common.BaseEntity;
 
@@ -26,13 +26,17 @@ public class Interview extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String videoDuration;
+    private Long score;
 
-    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<PoseAnalysis> poseAnalysis;
+    private Double videoDuration;
 
-    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<GazeAnalysis> gazeAnalyses;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pose_analysis_id")
+    private PoseAnalysis poseAnalysis;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gaze_analysis_id")
+    private GazeAnalysis gazeAnalysis;
 
     @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<InterviewVideo> interviewVideos;
@@ -42,15 +46,16 @@ public class Interview extends BaseEntity {
         this.user = user;
     }
 
-    public void setPoseAnalysis(List<PoseAnalysis> poseAnalysis) {
+    public void setAnalysis(PoseAnalysis poseAnalysis, GazeAnalysis gazeAnalysis) {
         this.poseAnalysis = poseAnalysis;
+        this.gazeAnalysis = gazeAnalysis;
     }
 
-    public void setGazeAnalysis(List<GazeAnalysis> gazeAnalyses) {
-        this.gazeAnalyses = gazeAnalyses;
+    public void setScore(Long score) {
+        this.score = score;
     }
 
-    public void setVideoDuration(String videoDuration) {
+    public void setVideoDuration(Double videoDuration) {
         this.videoDuration = videoDuration;
     }
 

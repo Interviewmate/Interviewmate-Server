@@ -1,45 +1,38 @@
 package org.interviewmate.domain.analysis.model;
 
-import lombok.AccessLevel;
+import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.Builder;
 import lombok.Getter;
-
-import javax.persistence.*;
-import lombok.NoArgsConstructor;
 import org.interviewmate.domain.interview.model.Interview;
-import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.global.common.BaseEntity;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PoseAnalysis extends BaseEntity{
+public class PoseAnalysis extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "pose_analysis_id")
-    private Long poseId;
+    private Long poseAnalysisId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "interview_id")
+    @OneToOne(mappedBy = "poseAnalysis", cascade = CascadeType.ALL,  orphanRemoval = true)
     private Interview interview;
 
-    @OneToOne
-    @JoinColumn(name = "interview_video_id")
-    private InterviewVideo interviewVideo;
-
-    private String startTime;
-
-    private String endTime;
-
-    private String duringTime;
+    @OneToMany(mappedBy = "poseAnalysis",  cascade = CascadeType.ALL,  orphanRemoval = true)
+    List<PoseAnalysisData> poseAnalysisData;
 
     @Builder
-    public PoseAnalysis(InterviewVideo interviewVideo, Interview interview, String startTime, String endTime, String duringTime) {
-        this.interviewVideo = interviewVideo;
-        this.interview = interview;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.duringTime = duringTime;
+    public PoseAnalysis() {
+    }
+
+    public void setPoseAnalysisData(List<PoseAnalysisData> poseAnalysisData) {
+        this.poseAnalysisData = poseAnalysisData;
     }
 
 }
