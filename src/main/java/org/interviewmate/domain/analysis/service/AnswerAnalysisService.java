@@ -9,16 +9,17 @@ import org.interviewmate.domain.answer.model.Answer;
 import org.interviewmate.domain.answer.repository.AnswerRepository;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
-import org.interviewmate.domain.portfolio.exception.PortfolioException;
 import org.interviewmate.domain.question.model.Question;
 import org.interviewmate.domain.question.repository.QuestionRepository;
 import org.interviewmate.global.error.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -40,15 +41,29 @@ public class AnswerAnalysisService {
         Question question = questionRepository.findById(questionId).orElseThrow(() -> new AnalysisException(ErrorCode.QUESTION_NOT_FOUND));
 
         String content = sendExtractAnswerRequest(objectKey);
-        String answerAnalysis = sendAnalysisAnswerRequest(question.getQuestion(), content, interview.getUser().getJob().name());
+        AIServerAnswerAnalysisResponse analysisResponse = sendAnalysisAnswerRequest(question.getQuestion(), content, interview.getUser().getJob().name());
+
+        String answerAnalysis = analysisResponse.getAnalysis();
+        List<String> deepQuestionList = Arrays.stream(analysisResponse.getDeep_question().split("\n"))
+                .map(s -> s.substring(3, s.length())).collect(Collectors.toList());
 
         Answer answer = Answer.builder()
                 .answerAnalysis(answerAnalysis)
                 .content(content)
                 .interview(interview)
                 .question(question)
+                .deepQuestions(deepQuestionList)
                 .build();
         answerRepository.save(answer);
+    }
+
+    public String isAnalysisDone(Long interviewId) {
+        Interview interview = interviewRepository.findById(interviewId).orElseThrow(() -> new AnalysisException(ErrorCode.INTERVIEW_NOT_FOUND));
+
+        int count = answerRepository.findAllByInterview(interview).size();
+        if (count < 10) {
+            return "false";
+        } else return "true";
     }
 
     // ai server 답변 추출 요청 - objectKey
@@ -71,7 +86,7 @@ public class AnswerAnalysisService {
         return answer;
     }
     // ai server 답변 분석 요청 - question, answer, user job+Engineer
-    private String sendAnalysisAnswerRequest(String question, String answer, String userJob) {
+    private AIServerAnswerAnalysisResponse sendAnalysisAnswerRequest(String question, String answer, String userJob) {
         String job = userJob + " Engineer";
         AIServerAnswerAnalysisResponse response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder
@@ -84,6 +99,6 @@ public class AnswerAnalysisService {
                 .bodyToMono(AIServerAnswerAnalysisResponse.class)
                 .block();
         log.info("answerAnalysis: {}", response.getAnalysis());
-        return response.getAnalysis();
+        return response;
     }
 }

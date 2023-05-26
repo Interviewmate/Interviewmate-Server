@@ -2,10 +2,11 @@ package org.interviewmate.domain.answer.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.interviewmate.domain.answer.model.Answer;
+
+import java.util.List;
 
 @Schema(description = "답변 정보 dto")
 @Getter
@@ -26,11 +27,15 @@ public class AnswerInfoDto {
     @Schema(description = "키워드", example = "Data Structure")
     private String keyword;
 
+    @Schema(description = "심층 질문", example = "[\"응시자의 경험을 물어보면서, 강화학습을 어느 분야에서 적용해 본 적이 있나요? 그 분야에서의 강화학습 적용 결과에 대해 이야기해 주실 수 있나요?\", \"응시자가 앞서 언급했던 Q-러닝, SARSA, DDPG, A3C, PPO 등의 다양한 강화학습 알고리즘 중에서 응시자가 구체적으로 어떤 알고리즘에 대해 깊이있는 경험이나 관심을 가지고 있는지 물어보세요. 해당 알고리즘의 장점과 단점, 그리고 적용 가능한 분야 등에 대해 자세히 이야기해 주실 수 있는지 확인할 수 있습니다.\", \"강화학습에서는 탐험과 활용 사이의 균형을 찾아야 합니다. 응시자가 이렇게 중요한 균형을 찾기 위해 강화학습에서 사용하는 방법이나 기법 등에 대해 설명해 주시면 좋을 것 같습니다. 또한, 이러한 균형을 찾는데 더 나은 방법이나 발전 가능성이 있는 새로운 기술이 있다면 자신의 생각을 들려주세요.\"]")
+    private List<String> deepQuestions;
+
     public AnswerInfoDto(Answer answer) {
         this.question = answer.getQuestion().getQuestion();
         this.answer = answer.getContent();
         this.answerAnalysis = answer.getAnswerAnalysis();
         this.bestAnswer = answer.getQuestion().getBestAnswer();
         this.keyword = answer.getQuestion().getKeyword();
+        this.deepQuestions = answer.getDeepQuestions();
     }
 }
