@@ -8,12 +8,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.interviewmate.domain.interview.model.Interview;
+import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.global.common.BaseEntity;
 
 @Entity
@@ -30,6 +32,10 @@ public class GazeAnalysis extends BaseEntity {
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
+    @OneToOne
+    @JoinColumn(name = "interview_video_id")
+    private InterviewVideo interviewVideo;
+
     private String startTime;
 
     private String endTime;
@@ -37,7 +43,8 @@ public class GazeAnalysis extends BaseEntity {
     private String duringTime;
 
     @Builder
-    public GazeAnalysis(Interview interview, String startTime, String endTime, String duringTime) {
+    public GazeAnalysis(InterviewVideo interviewVideo, Interview interview, String startTime, String endTime, String duringTime) {
+        this.interviewVideo = interviewVideo;
         this.interview = interview;
         this.startTime = startTime;
         this.endTime = endTime;

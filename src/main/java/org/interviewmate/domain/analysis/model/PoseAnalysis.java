@@ -7,6 +7,7 @@ import lombok.Getter;
 import javax.persistence.*;
 import lombok.NoArgsConstructor;
 import org.interviewmate.domain.interview.model.Interview;
+import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.global.common.BaseEntity;
 
 @Entity
@@ -22,6 +23,10 @@ public class PoseAnalysis extends BaseEntity{
     @JoinColumn(name = "interview_id")
     private Interview interview;
 
+    @OneToOne
+    @JoinColumn(name = "interview_video_id")
+    private InterviewVideo interviewVideo;
+
     private String startTime;
 
     private String endTime;
@@ -29,7 +34,8 @@ public class PoseAnalysis extends BaseEntity{
     private String duringTime;
 
     @Builder
-    public PoseAnalysis(Interview interview, String startTime, String endTime, String duringTime) {
+    public PoseAnalysis(InterviewVideo interviewVideo, Interview interview, String startTime, String endTime, String duringTime) {
+        this.interviewVideo = interviewVideo;
         this.interview = interview;
         this.startTime = startTime;
         this.endTime = endTime;
