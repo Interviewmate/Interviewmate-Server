@@ -57,8 +57,7 @@ public class SecurityConfig {
                 .authorizeRequests()
 
                 .antMatchers(
-                        "/users/sign-up", "/keywords/user", "/auth/**", "/s3/**", "/analyses/**"
-                ).permitAll()
+                        "/users/sign-up", "/keywords/user", "/auth/**", "/s3/**").permitAll()
 
                 // Swagger 관련 Uri 모든 권한 승인
                 .antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-resources/**").permitAll()

@@ -49,8 +49,7 @@ public class OpenApiConfig {
                 .builder()
                 .group("토큰 불필요 API")
                 .pathsToMatch(
-                        "/users/sign-up", "/keywords/user", "/auth/**", "/s3/**", "/analyses/**"
-                )
+                        "/users/sign-up", "/keywords/user", "/auth/**", "/s3/**")
                 .build();
     }
 
