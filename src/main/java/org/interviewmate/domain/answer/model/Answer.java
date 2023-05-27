@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.question.model.Question;
+import org.interviewmate.global.common.BaseEntity;
 import org.interviewmate.global.util.converter.StringArrayByEnterConverter;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.List;
 @Table(name = "answer")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Answer {
+public class Answer extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ansId;
