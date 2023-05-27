@@ -5,6 +5,8 @@ import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_INTERVIEW_VIDEO
 import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_USER;
 import static org.interviewmate.global.error.ErrorCode.NOT_FOUND_DATA;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -19,15 +21,19 @@ import org.interviewmate.domain.analysis.model.dto.response.BehaviorAnalysisFind
 import org.interviewmate.domain.analysis.model.dto.response.ComprehensiveAnalysisProcessOutDto;
 import org.interviewmate.domain.analysis.model.vo.AiServerBehaviorAnalysisVO;
 import org.interviewmate.domain.analysis.model.vo.AnalysisScoreVO;
+import org.interviewmate.domain.analysis.model.keywordDistribution;
 import org.interviewmate.domain.analysis.repository.GazeAnalysisDataRepository;
 import org.interviewmate.domain.analysis.repository.PoseAnalysisDataRepository;
 import org.interviewmate.domain.analysis.repository.PoseAnalysisRepository;
 import org.interviewmate.domain.analysis.repository.GazeAnalysisRepository;
+import org.interviewmate.domain.answer.model.Answer;
+import org.interviewmate.domain.answer.repository.AnswerRepository;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.interview.repository.InterviewVideoRepository;
+import org.interviewmate.domain.question.repository.QuestionRepository;
 import org.interviewmate.domain.user.exception.UserException;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.domain.user.repository.UserRepository;
@@ -47,7 +53,8 @@ public class AnalysisService {
     private final UserRepository userRepository;
     private final InterviewRepository interviewRepository;
     private final InterviewVideoRepository interviewVideoRepository;
-
+    private final AnswerRepository answerRepository;
+    private final QuestionRepository questionRepository;
     private final PoseAnalysisRepository poseAnalysisRepository;
     private final GazeAnalysisRepository gazeAnalysisRepository;
     private final PoseAnalysisDataRepository poseAnalysisDataRepository;
@@ -57,10 +64,7 @@ public class AnalysisService {
     private String behaviorAnalysisUri;
 
     /**
-     * 종합 분석
-     * 1. 모의 면접 검색
-     * 2. 시선/자세 분석 별로 점수 수집
-     * 3. 모의 면접 평균 점수 계산
+     * 종합 분석 1. 모의 면접 검색 2. 시선/자세 분석 별로 점수 수집 3. 모의 면접 평균 점수 계산
      */
     public ComprehensiveAnalysisProcessOutDto processComprehensiveAnalysis(Long userId) {
 
@@ -68,6 +72,57 @@ public class AnalysisService {
                 .orElseThrow(() -> new UserException(NOT_EXIST_USER));
 
         List<Interview> findInterview = interviewRepository.findAllByUser(findUser);
+
+        List<keywordDistribution> keywordDistributions = getKeywordDistribution(findInterview);
+        List<AnalysisScoreVO> gazeScore = getGazeScore(findInterview);
+        List<AnalysisScoreVO> poseScore = getPoseScore(findInterview);
+        Long averageInterviewScore = getAverageInterviewScore(findInterview);
+
+        return ComprehensiveAnalysisProcessOutDto.of(averageInterviewScore, gazeScore, poseScore, keywordDistributions);
+
+    }
+
+    private List<keywordDistribution> getKeywordDistribution(List<Interview> findInterview) {
+
+        List<Answer> answers = new ArrayList<>();
+        findInterview.stream()
+                .forEach(interview -> {
+                    answers.addAll(answerRepository.findAllByInterview(interview));
+                });
+
+        List<String> keywords = answers.stream()
+                .map(answer -> answer.getQuestion().getKeyword())
+                .collect(Collectors.toList());
+
+        List<keywordDistribution> keywordDistributions = new ArrayList<>();
+        keywords.stream()
+                .forEach(
+                        keyword -> {
+                            if (keywordDistributions.stream().noneMatch(k -> k.getName().equals(keyword))) {
+
+                                keywordDistributions.add(
+                                        keywordDistribution.builder()
+                                                .name(keyword)
+                                                .count(0L)
+                                                .build());
+                            }
+                        });
+
+        keywordDistributions.stream()
+                .forEach(k ->  {
+                    keywords.stream()
+                            .forEach(keyword -> {
+                                if (k.getName().equals(keyword)) {
+                                    k.count();
+                                }
+                            });
+                });
+
+        return keywordDistributions;
+
+    }
+
+    private static List<AnalysisScoreVO> getGazeScore(List<Interview> findInterview) {
         List<AnalysisScoreVO> gazeScore = findInterview.stream()
                 .map(interview ->
                         AnalysisScoreVO.builder()
@@ -75,7 +130,10 @@ public class AnalysisService {
                                 .score(interview.getGazeScore())
                                 .build()
                 ).collect(Collectors.toList());
+        return gazeScore;
+    }
 
+    private static List<AnalysisScoreVO> getPoseScore(List<Interview> findInterview) {
         List<AnalysisScoreVO> poseScore = findInterview.stream()
                 .map(interview ->
                         AnalysisScoreVO.builder()
@@ -83,11 +141,7 @@ public class AnalysisService {
                                 .score(interview.getPoseScore())
                                 .build()
                 ).collect(Collectors.toList());
-
-        Long averageInterviewScore = getAverageInterviewScore(findInterview);
-
-        return ComprehensiveAnalysisProcessOutDto.of(averageInterviewScore, gazeScore, poseScore);
-
+        return poseScore;
     }
 
     private Long getAverageInterviewScore(List<Interview> findInterview) {
@@ -97,7 +151,7 @@ public class AnalysisService {
                 .mapToLong(interview -> interview.getScore())
                 .sum();
 
-        return Math.round(score / (double)findInterview.size());
+        return Math.round(score / (double) findInterview.size());
     }
 
     public void processBehaviorAnalysis(Long interviewId, String objectKey) {

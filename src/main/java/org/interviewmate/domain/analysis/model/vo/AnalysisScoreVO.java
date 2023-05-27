@@ -10,10 +10,12 @@ import lombok.NoArgsConstructor;
 public class AnalysisScoreVO {
 
     Long interviewId;
-    Long Score;
+    Long score;
+
     @Builder
     public AnalysisScoreVO(Long interviewId, Long score) {
         this.interviewId = interviewId;
-        Score = score;
+        this.score = score;
     }
+
 }
