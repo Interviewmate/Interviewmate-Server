@@ -1,8 +1,6 @@
 package org.interviewmate.domain.analysis.model.vo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class  AiServerBehaviorAnalysisVO {
 
+    @JsonProperty("video_duration")
+    private Double videoDuration;
+
     @JsonProperty("gazeInfo")
     private AiServerGazeAnalysisResultVO gazeAnalysisResults;
 
     @JsonProperty("poseInfo")
     private AiServerPoseAnalysisResultVO poseAnalysisResults;
-
-    @JsonProperty("video_duration")
-    private Double videoDuration;
 
 }
