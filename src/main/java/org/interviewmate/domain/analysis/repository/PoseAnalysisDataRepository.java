@@ -7,8 +7,9 @@ import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PoseAnalysisRepository extends JpaRepository<PoseAnalysis, Long> {
+public interface PoseAnalysisDataRepository extends JpaRepository<PoseAnalysisData, Long> {
 
-    PoseAnalysis findAllByInterview(Interview interview);
+    List<PoseAnalysisData> findAllByPoseAnalysis(PoseAnalysis poseAnalysis);
+    List<PoseAnalysisData> findAllByInterviewVideo(InterviewVideo interviewVideo);
 
 }

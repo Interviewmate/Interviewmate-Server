@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.analysis.model.dto.response.BehaviorAnalysisFindOutDto;
+import org.interviewmate.domain.analysis.model.dto.response.ComprehensiveAnalysisProcessOutDto;
 import org.interviewmate.domain.analysis.service.AnalysisService;
 import org.interviewmate.domain.analysis.service.AnswerAnalysisService;
 import org.interviewmate.global.util.response.ResponseUtil;
@@ -60,12 +61,12 @@ public class AnalysisController {
 
     @Operation(summary = "종합 분석 API", description = "모든 면접 질문 영상에 대한 분석")
     @Parameters({
-            @Parameter(name = "userId", description = "인터뷰 식별자"),
+            @Parameter(name = "userId", description = "유저 식별자"),
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<ResponseDto<String>> processComprehensiveAnalysis(@PathVariable Long userId) {
-        analysisService.processComprehensiveAnalysis(userId);
-        return ResponseUtil.SUCCESS(SUCCESS, "");
+    public ResponseEntity<ResponseDto<ComprehensiveAnalysisProcessOutDto>> processComprehensiveAnalysis(@PathVariable Long userId) {
+        ComprehensiveAnalysisProcessOutDto response = analysisService.processComprehensiveAnalysis(userId);
+        return ResponseUtil.SUCCESS(SUCCESS, response);
     }
 
     @Operation(summary = "분석 완료 여부 확인 API", description = "인터뷰 전체 영상의 분석이 완료됐는지 확인하는 API")

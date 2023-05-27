@@ -5,8 +5,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.interviewmate.domain.analysis.model.PoseAnalysis;
 import org.interviewmate.domain.analysis.model.GazeAnalysis;
+import org.interviewmate.domain.analysis.model.PoseAnalysis;
 import org.interviewmate.domain.user.model.User;
 import org.interviewmate.global.common.BaseEntity;
 
@@ -26,31 +26,36 @@ public class Interview extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String videoDuration;
+    private Long score;
 
-    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<PoseAnalysis> poseAnalysis;
+    private Long gazeScore;
 
-    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<GazeAnalysis> gazeAnalyses;
+    private Long poseScore;
 
-    @OneToMany(mappedBy = "interview", cascade = CascadeType.ALL,  orphanRemoval = true)
-    private List<InterviewVideo> interviewVideos;
+    private Double videoDuration;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "gaze_analysis_id")
+    private GazeAnalysis gazeAnalysis;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pose_analysis_id")
+    private PoseAnalysis poseAnalysis;
 
     @Builder
-    public Interview(User user) {
+    public Interview(User user, GazeAnalysis gazeAnalysis, PoseAnalysis poseAnalysis) {
         this.user = user;
-    }
-
-    public void setPoseAnalysis(List<PoseAnalysis> poseAnalysis) {
+        this.gazeAnalysis = gazeAnalysis;
         this.poseAnalysis = poseAnalysis;
     }
 
-    public void setGazeAnalysis(List<GazeAnalysis> gazeAnalyses) {
-        this.gazeAnalyses = gazeAnalyses;
+    public void setScore(double gazeScore, double poseScore) {
+        this.gazeScore = Math.round(gazeScore);
+        this.poseScore = Math.round(poseScore);
+        this.score = Math.round((gazeScore + poseScore) / 2);
     }
 
-    public void setVideoDuration(String videoDuration) {
+    public void setVideoDuration(Double videoDuration) {
         this.videoDuration = videoDuration;
     }
 
