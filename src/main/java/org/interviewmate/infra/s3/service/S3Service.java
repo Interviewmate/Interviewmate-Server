@@ -46,7 +46,7 @@ public class S3Service {
         // pre-signed URL 생성
         List<String> preSignedUrls = createPreSignedUrls(objectKeys);
 
-        setObjectInRedis(path, preSignedUrls);
+        //setObjectInRedis(path, preSignedUrls);
 
         log.info("-----Complete To Create Pre-signed Url-----");
 
