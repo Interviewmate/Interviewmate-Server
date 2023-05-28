@@ -3,9 +3,11 @@ package org.interviewmate.domain.interview.service;
 import static org.interviewmate.global.error.ErrorCode.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.interviewmate.domain.interview.exception.InterviewException;
+import org.interviewmate.domain.interview.exception.InterviewVideoException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.domain.interview.model.dto.response.InterviewVideoFindOutDto;
@@ -37,6 +39,10 @@ public class InterviewVideoService {
                     return new QuestionException(QUESTION_NOT_FOUND);
                 });
 
+        if (!Objects.isNull(interviewVideoRepository.findByUrl(url))) {
+            throw new InterviewVideoException(DUPLICATE_URL);
+        }
+
         InterviewVideo interviewVideo = InterviewVideo.builder()
                 .interview(findInterview)
                 .question(question)
@@ -44,6 +50,7 @@ public class InterviewVideoService {
                 .build();
 
         interviewVideoRepository.save(interviewVideo);
+
 
     }
 

@@ -25,6 +25,9 @@ public enum ErrorCode {
     FAIL_TO_LOAD_SUBJECT(HttpStatus.BAD_REQUEST, "토큰에 대한 정보를 불러올 수 없습니다."),
     INVALID_TOKEN_TYPE(HttpStatus.BAD_REQUEST, "유효하지 않은 토큰 타입입니다."),
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "만료된 토큰입니다."),
+
+    DUPLICATE_URL(HttpStatus.BAD_REQUEST, "중복된 URL입니다."),
+
     FAILED_GAZE_ANALYSIS(HttpStatus.INTERNAL_SERVER_ERROR, "시선 분석을 실패했습니다."),
     FAILED_BEHAVIOR_ANALYSIS(HttpStatus.INTERNAL_SERVER_ERROR, "행동 분석을 실패했습니다."),
 

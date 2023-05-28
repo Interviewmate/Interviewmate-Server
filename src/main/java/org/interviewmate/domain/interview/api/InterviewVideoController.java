@@ -30,10 +30,10 @@ public class InterviewVideoController {
     private final InterviewVideoService interviewVideoService;
 
     @Operation(summary = "면접 비디오 URL 등록", description = "S3에 업로드 한 면접 비디오에 대한 주소를 등록")
-    @PostMapping("/interview/{interviewId}/question/{questiondId}")
+    @PostMapping("/interview/{interviewId}/question/{questionId}")
     public ResponseEntity<ResponseDto<String>> createInterviewVideo(
            @PathVariable Long interviewId,
-           @Parameter Long questionId,
+           @PathVariable Long questionId,
            @RequestParam String url
     ) {
         interviewVideoService.createInterviewVideo(interviewId, questionId, url);
