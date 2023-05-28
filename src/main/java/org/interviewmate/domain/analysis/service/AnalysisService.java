@@ -154,6 +154,9 @@ public class AnalysisService {
         return Math.round(score / (double) findInterview.size());
     }
 
+    /**
+     * 행동 분석 요청
+     */
     public void processBehaviorAnalysis(Long interviewId, String objectKey) {
 
         Interview findInterview = interviewRepository.findById(interviewId)
@@ -224,6 +227,9 @@ public class AnalysisService {
 
     }
 
+    /**
+     * 행동 분석 결과 생성
+     */
     public List<BehaviorAnalysisFindOutDto> findBehaviorAnalysis(Long interviewId) {
 
         Interview findInterview = interviewRepository.findById(interviewId)
