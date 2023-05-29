@@ -95,8 +95,8 @@ public class BehaviorAnalysisService {
                         data -> GazeAnalysisData.builder()
                                 .gazeAnalysis(gazeAnalysis)
                                 .interviewVideo(findVideo)
-                                .startTime(data.getStartSec())
-                                .endTime(data.getEndSec())
+                                .startTime(data.getEndSec())
+                                .endTime(data.getStartSec())
                                 .duringTime(data.getDuringSec())
                                 .build())
                 .collect(Collectors.toList());
