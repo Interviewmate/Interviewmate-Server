@@ -1,5 +1,7 @@
 package org.interviewmate.domain.interview.model;
 
+import static org.interviewmate.domain.interview.model.AnalysisStatus.*;
+
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -34,6 +36,9 @@ public class Interview extends BaseEntity {
 
     private Double videoDuration;
 
+    @Enumerated(value = EnumType.STRING)
+    private AnalysisStatus analysisStatus;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "gaze_analysis_id")
     private GazeAnalysis gazeAnalysis;
@@ -47,6 +52,7 @@ public class Interview extends BaseEntity {
         this.user = user;
         this.gazeAnalysis = gazeAnalysis;
         this.poseAnalysis = poseAnalysis;
+        this.analysisStatus = NOT_DONE;
     }
 
     public void setScore(double gazeScore, double poseScore) {
@@ -59,4 +65,7 @@ public class Interview extends BaseEntity {
         this.videoDuration = videoDuration;
     }
 
+    public void setAnalysisStatus(AnalysisStatus analysisStatus) {
+        this.analysisStatus = analysisStatus;
+    }
 }

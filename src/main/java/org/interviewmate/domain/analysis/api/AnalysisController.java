@@ -13,6 +13,7 @@ import org.interviewmate.domain.analysis.model.dto.response.BehaviorAnalysisFind
 import org.interviewmate.domain.analysis.model.dto.response.ComprehensiveAnalysisProcessOutDto;
 import org.interviewmate.domain.analysis.service.AnalysisService;
 import org.interviewmate.domain.analysis.service.AnswerAnalysisService;
+import org.interviewmate.domain.analysis.service.BehaviorAnalysisService;
 import org.interviewmate.global.util.response.ResponseUtil;
 import org.interviewmate.global.util.response.dto.ResponseDto;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AnalysisController {
 
     private final AnalysisService analysisService;
+    private final BehaviorAnalysisService behaviorAnalysisService;
     private final AnswerAnalysisService answerAnalysisService;
 
     @Operation(summary = "분석 요청 API", description = "1개 면접 질문 영상에 대한 시선, 자세, 답변 분석 요청")
@@ -43,8 +45,9 @@ public class AnalysisController {
     public ResponseEntity<ResponseDto<String>> createAnalysis(@PathVariable Long interviewId, @RequestParam String objectKey,
                                                               @RequestParam("questionId")Long questionId) {
 
-        analysisService.processBehaviorAnalysis(interviewId, objectKey);
+        behaviorAnalysisService.processBehaviorAnalysis(interviewId, objectKey);
         answerAnalysisService.createAnswerAnalysis(interviewId, questionId, objectKey);
+        analysisService.updateAnalysisStatus(interviewId);
         return ResponseUtil.SUCCESS(SUCCESS, "");
 
     }
@@ -76,7 +79,7 @@ public class AnalysisController {
     @ApiResponse(responseCode = "200", description = "true (완료) / false")
     @GetMapping("/check/{interviewId}")
     public ResponseEntity<ResponseDto<String>> createAnalysis(@PathVariable Long interviewId) {
-        String analysisDone = answerAnalysisService.isAnalysisDone(interviewId);
+        String analysisDone = analysisService.isAnalysisDone(interviewId);
         return ResponseUtil.SUCCESS(SUCCESS, analysisDone);
 
     }

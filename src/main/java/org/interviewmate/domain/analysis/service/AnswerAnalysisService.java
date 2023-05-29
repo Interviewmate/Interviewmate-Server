@@ -57,15 +57,6 @@ public class AnswerAnalysisService {
         answerRepository.save(answer);
     }
 
-    public String isAnalysisDone(Long interviewId) {
-        Interview interview = interviewRepository.findById(interviewId).orElseThrow(() -> new AnalysisException(ErrorCode.INTERVIEW_NOT_FOUND));
-
-        int count = answerRepository.findAllByInterview(interview).size();
-        if (count < 10) {
-            return "false";
-        } else return "true";
-    }
-
     // ai server 답변 추출 요청 - objectKey
     private String sendExtractAnswerRequest(String objectKey) {
         AIServerAnswerExtractResponse response = WebClient.create().get()
