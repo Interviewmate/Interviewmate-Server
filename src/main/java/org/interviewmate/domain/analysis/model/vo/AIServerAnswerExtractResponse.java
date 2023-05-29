@@ -1,4 +1,4 @@
-package org.interviewmate.domain.analysis.model;
+package org.interviewmate.domain.analysis.model.vo;
 
 import lombok.Getter;
 

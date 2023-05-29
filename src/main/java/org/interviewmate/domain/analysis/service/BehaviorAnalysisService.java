@@ -1,42 +1,28 @@
 package org.interviewmate.domain.analysis.service;
 
-import static org.interviewmate.domain.interview.model.AnalysisStatus.DONE;
 import static org.interviewmate.global.error.ErrorCode.FAILED_BEHAVIOR_ANALYSIS;
 import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_INTERVIEW_VIDEO;
-import static org.interviewmate.global.error.ErrorCode.NOT_EXIST_USER;
 import static org.interviewmate.global.error.ErrorCode.NOT_FOUND_DATA;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.analysis.exception.AnalysisException;
-import org.interviewmate.domain.analysis.model.AnalysisData;
 import org.interviewmate.domain.analysis.model.GazeAnalysis;
 import org.interviewmate.domain.analysis.model.GazeAnalysisData;
 import org.interviewmate.domain.analysis.model.PoseAnalysis;
 import org.interviewmate.domain.analysis.model.PoseAnalysisData;
-import org.interviewmate.domain.analysis.model.dto.response.BehaviorAnalysisFindOutDto;
-import org.interviewmate.domain.analysis.model.dto.response.ComprehensiveAnalysisProcessOutDto;
-import org.interviewmate.domain.analysis.model.keywordDistribution;
 import org.interviewmate.domain.analysis.model.vo.AiServerBehaviorAnalysisVO;
-import org.interviewmate.domain.analysis.model.vo.AnalysisScoreVO;
 import org.interviewmate.domain.analysis.repository.GazeAnalysisDataRepository;
 import org.interviewmate.domain.analysis.repository.GazeAnalysisRepository;
 import org.interviewmate.domain.analysis.repository.PoseAnalysisDataRepository;
 import org.interviewmate.domain.analysis.repository.PoseAnalysisRepository;
-import org.interviewmate.domain.answer.model.Answer;
-import org.interviewmate.domain.answer.repository.AnswerRepository;
 import org.interviewmate.domain.interview.exception.InterviewException;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.interview.model.InterviewVideo;
 import org.interviewmate.domain.interview.repository.InterviewRepository;
 import org.interviewmate.domain.interview.repository.InterviewVideoRepository;
-import org.interviewmate.domain.question.repository.QuestionRepository;
-import org.interviewmate.domain.user.exception.UserException;
-import org.interviewmate.domain.user.model.User;
-import org.interviewmate.domain.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -78,30 +64,14 @@ public class BehaviorAnalysisService {
         AiServerBehaviorAnalysisVO response = executeBehaviorAnalysis(objectKey);
         log.info("------------분석 완료------------");
 
-        saveGazeAnalysisData(gazeAnalysis, findVideo, response);
-        double gazeScore = 100.0;
-        gazeScore -= gazeAnalysis.getGazeAnalysisData()
-                .stream()
-                .mapToDouble(
-                        gazeAnalysisData ->
-                                getScore(gazeAnalysisData.getDuringTime(), response.getVideoDuration())
-                ).sum();
-
         savePoseAnalysisData(poseAnalysis, findVideo, response);
-        double poseScore = 100.0;
-        poseScore -= poseAnalysis.getPoseAnalysisData()
-                .stream()
-                .mapToDouble(
-                        poseAnalysisData ->
-                                getScore(poseAnalysisData.getDuringTime(), response.getVideoDuration())
-                ).sum();
-
+        saveGazeAnalysisData(gazeAnalysis, findVideo, response);
 
         findInterview.setVideoDuration(response.getVideoDuration());
-        findInterview.setScore(gazeScore, poseScore);
         interviewRepository.save(findInterview);
 
     }
+
 
     private void savePoseAnalysisData(PoseAnalysis poseAnalysis, InterviewVideo findVideo, AiServerBehaviorAnalysisVO response) {
         List<PoseAnalysisData> poseAnalyses = response.getPoseAnalysisResults().getAnalysisData().stream()
@@ -156,8 +126,5 @@ public class BehaviorAnalysisService {
 
     }
 
-    private Double getScore(Double duringTime, Double videoTime) {
-        return (duringTime / videoTime) * 100;
-    }
 
 }
