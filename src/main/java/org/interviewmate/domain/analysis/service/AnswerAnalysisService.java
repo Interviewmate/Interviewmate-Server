@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.analysis.exception.AnalysisException;
 import org.interviewmate.domain.analysis.model.AIServerAnswerAnalysisResponse;
-import org.interviewmate.domain.analysis.model.AIServerAnswerExtractResponse;
+import org.interviewmate.domain.analysis.model.vo.AIServerAnswerExtractResponse;
 import org.interviewmate.domain.answer.model.Answer;
 import org.interviewmate.domain.answer.repository.AnswerRepository;
 import org.interviewmate.domain.interview.model.Interview;

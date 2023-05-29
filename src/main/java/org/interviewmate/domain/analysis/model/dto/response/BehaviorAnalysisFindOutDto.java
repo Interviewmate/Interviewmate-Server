@@ -5,29 +5,20 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import org.interviewmate.domain.analysis.model.AnalysisData;
-import org.interviewmate.domain.analysis.model.vo.AnalysisDataVO;
+import org.interviewmate.domain.analysis.model.vo.BehaviorAnalysisVO;
 
 @Schema(name = "행동 분석 Response", description = "면접에 대한 행동 분석 결과")
 @Getter
 @Builder(access = AccessLevel.PRIVATE)
 public class BehaviorAnalysisFindOutDto {
 
-    private String url;
-    private String question;
     private Long score;
-    private List<AnalysisData> gazeAnalysis;
-    private List<AnalysisData> poseAnalysis;
+    private List<BehaviorAnalysisVO> behaviorAnalyses;
 
-    public static BehaviorAnalysisFindOutDto of(
-            String url, String question, Long score, List<AnalysisData> gazeAnalysis, List<AnalysisData> poseAnalysis
-    ) {
+    public static BehaviorAnalysisFindOutDto of(Long score, List<BehaviorAnalysisVO> behaviorAnalyses) {
        return BehaviorAnalysisFindOutDto.builder()
-               .url(url)
-               .question(question)
                .score(score)
-               .gazeAnalysis(gazeAnalysis)
-               .poseAnalysis(poseAnalysis)
+               .behaviorAnalyses(behaviorAnalyses)
                .build();
     }
 }

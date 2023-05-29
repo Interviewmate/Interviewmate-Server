@@ -56,8 +56,8 @@ public class AnalysisController {
             @Parameter(name = "interviewId", description = "인터뷰 식별자"),
     })
     @GetMapping("/interview/{interviewId}")
-    public ResponseEntity<ResponseDto<List<BehaviorAnalysisFindOutDto>>> findBehaviorAnalysis(@PathVariable Long interviewId) {
-        List<BehaviorAnalysisFindOutDto> response = analysisService.findBehaviorAnalysis(interviewId);
+    public ResponseEntity<ResponseDto<BehaviorAnalysisFindOutDto>> findBehaviorAnalysis(@PathVariable Long interviewId) {
+        BehaviorAnalysisFindOutDto response = analysisService.findBehaviorAnalysis(interviewId);
         return ResponseUtil.SUCCESS(SUCCESS, response);
     }
 

@@ -14,6 +14,6 @@ public class AiServerGazeAnalysisResultVO {
     private Double totalTime;
 
     @JsonProperty("in_out_tuple_list")
-    private List<AnalysisDataVO> analysisData = new ArrayList<>();
+    private List<DataVO> analysisData = new ArrayList<>();
 
 }
