@@ -78,30 +78,14 @@ public class BehaviorAnalysisService {
         AiServerBehaviorAnalysisVO response = executeBehaviorAnalysis(objectKey);
         log.info("------------분석 완료------------");
 
-        saveGazeAnalysisData(gazeAnalysis, findVideo, response);
-        double gazeScore = 100.0;
-        gazeScore -= gazeAnalysis.getGazeAnalysisData()
-                .stream()
-                .mapToDouble(
-                        gazeAnalysisData ->
-                                getScore(gazeAnalysisData.getDuringTime(), response.getVideoDuration())
-                ).sum();
-
         savePoseAnalysisData(poseAnalysis, findVideo, response);
-        double poseScore = 100.0;
-        poseScore -= poseAnalysis.getPoseAnalysisData()
-                .stream()
-                .mapToDouble(
-                        poseAnalysisData ->
-                                getScore(poseAnalysisData.getDuringTime(), response.getVideoDuration())
-                ).sum();
-
+        saveGazeAnalysisData(gazeAnalysis, findVideo, response);
 
         findInterview.setVideoDuration(response.getVideoDuration());
-        findInterview.setScore(gazeScore, poseScore);
         interviewRepository.save(findInterview);
 
     }
+
 
     private void savePoseAnalysisData(PoseAnalysis poseAnalysis, InterviewVideo findVideo, AiServerBehaviorAnalysisVO response) {
         List<PoseAnalysisData> poseAnalyses = response.getPoseAnalysisResults().getAnalysisData().stream()
@@ -156,8 +140,5 @@ public class BehaviorAnalysisService {
 
     }
 
-    private Double getScore(Double duringTime, Double videoTime) {
-        return (duringTime / videoTime) * 100;
-    }
 
 }

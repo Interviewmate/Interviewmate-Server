@@ -44,7 +44,10 @@ public class AnalysisService {
 
     /**
      * 종합 분석
-     * 1. 모의 면접 검색 2. 시선/자세 분석 별로 점수 수집 3. 모의 면접 평균 점수 계산
+     * 1. 모의 면접 검색
+     * 2. 키워드 분포도 생성
+     * 3. 시선/자세 분석 별로 점수 수집
+     * 4. 모의 면접 평균 점수 계산
      */
     public ComprehensiveAnalysisProcessOutDto processComprehensiveAnalysis(Long userId) {
 
@@ -89,7 +92,7 @@ public class AnalysisService {
                         });
 
         keywordDistributions.stream()
-                .forEach(k ->  {
+                .forEach(k -> {
                     keywords.stream()
                             .forEach(keyword -> {
                                 if (k.getName().equals(keyword)) {
@@ -142,11 +145,40 @@ public class AnalysisService {
         Interview findInterview = interviewRepository.findById(interviewId)
                 .orElseThrow(() -> new InterviewException(NOT_FOUND_DATA));
 
+        int answerNumber = answerRepository.findAllByInterview(findInterview).size();
+
         GazeAnalysis gazeAnalysis = findInterview.getGazeAnalysis();
         PoseAnalysis poseAnalysis = findInterview.getPoseAnalysis();
 
-        List<InterviewVideo> interviewVideos = interviewVideoRepository.findAllByInterview(findInterview);
+        double gazeScore = 100.0;
+        gazeScore -= gazeAnalysis.getGazeAnalysisData()
+                .stream()
+                .mapToDouble(
+                        gazeAnalysisData ->
+                                getScore(
+                                        gazeAnalysisData.getDuringTime(),
+                                        findInterview.getVideoDuration(),
+                                        answerNumber
+                                )
+                ).sum();
+
+        double poseScore = 100.0;
+        poseScore -= poseAnalysis.getPoseAnalysisData()
+                .stream()
+                .mapToDouble(
+                        poseAnalysisData ->
+                                getScore(
+                                        poseAnalysisData.getDuringTime(),
+                                        findInterview.getVideoDuration(),
+                                        answerNumber
+                                )
+                ).sum();
+
+        findInterview.setScore(gazeScore, poseScore);
+        findInterview.setAnalysisStatus(DONE);
         interviewRepository.save(findInterview);
+
+        List<InterviewVideo> interviewVideos = interviewVideoRepository.findAllByInterview(findInterview);
 
         return interviewVideos.stream()
                 .map(interviewVideo -> BehaviorAnalysisFindOutDto.of(
@@ -169,14 +201,8 @@ public class AnalysisService {
 
     }
 
-    public void updateAnalysisStatus(Long interviewId) {
-
-        Interview findInterview = interviewRepository.findById(interviewId)
-                .orElseThrow(() -> new InterviewException(NOT_FOUND_DATA));
-
-        findInterview.setAnalysisStatus(DONE);
-        interviewRepository.save(findInterview);
-
+    private Double getScore(Double duringTime, Double videoTime, int answerNumber) {
+        return (duringTime / videoTime) * 100 / answerNumber;
     }
 
     public String isAnalysisDone(Long interviewId) {

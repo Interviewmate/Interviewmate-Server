@@ -47,7 +47,6 @@ public class AnalysisController {
 
         behaviorAnalysisService.processBehaviorAnalysis(interviewId, objectKey);
         answerAnalysisService.createAnswerAnalysis(interviewId, questionId, objectKey);
-        analysisService.updateAnalysisStatus(interviewId);
         return ResponseUtil.SUCCESS(SUCCESS, "");
 
     }
