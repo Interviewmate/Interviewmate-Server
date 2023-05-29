@@ -1,5 +1,6 @@
 package org.interviewmate.domain.interview.repository;
 
+import org.interviewmate.domain.interview.model.AnalysisStatus;
 import org.interviewmate.domain.interview.model.Interview;
 import org.interviewmate.domain.user.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,5 +12,10 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
 
     Boolean existsByUserAndCreatedAtBetween(User user, LocalDateTime startDateTime, LocalDateTime endDateTime);
     List<Interview> findByUserAndCreatedAtBetween(User user, LocalDateTime startDateTime, LocalDateTime endDateTime);
-    List<Interview> findAllByUser(User findUser);
+    List<Interview> findAllByUser(User user);
+    List<Interview> findAllByUserAndAnalysisStatus(User user, AnalysisStatus status);
+
+    Interview findByInterIdAndAnalysisStatus(Long interviewId, AnalysisStatus status);
+
 }
+
