@@ -59,7 +59,6 @@ public class QuestionService {
         List<QuestionInfoDto> portfolioQuestionList = new ArrayList<>();
         if(!portfolio.getKeywords().isEmpty()){
             portfolioQuestionList = sendCreateQuestionRequestToAiServer(portfolio.getKeywords());
-
         }
 
         if (portfolioQuestionList.isEmpty()) {
@@ -88,15 +87,11 @@ public class QuestionService {
 //                })
 //                .block();
         List<Long> response = new ArrayList<>();
+        response = Arrays.asList(1047L, 1916L, 1893L, 1957L, 1958L, 492L, 696L, 703L, 691L, 697L);
+
         if (dto.getQuestionNum() == 8) {
             response = Arrays.asList(1047L, 1916L, 1893L, 1957L, 1958L, 492L, 696L, 703L);
         }
-        else{
-            response = Arrays.asList(1047L, 1916L, 1893L, 1957L, 1958L, 492L, 696L, 703L, 691L, 697L);
-        }
-
-
-
 
         List<QuestionInfoDto> questionInfoDtoList = response.stream()
                 .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId).orElse(null)))
