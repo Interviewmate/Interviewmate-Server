@@ -19,4 +19,8 @@ public class QuestionAiServerRequestDto {
         this.portfolioKeyword = portfolioKeyword;
         this.job = job;
     }
+
+    public void setQuestionNum(Integer questionNum) {
+        this.questionNum = questionNum;
+    }
 }
