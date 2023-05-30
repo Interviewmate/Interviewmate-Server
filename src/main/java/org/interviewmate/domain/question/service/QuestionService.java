@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.interviewmate.domain.portfolio.exception.PortfolioException;
 import org.interviewmate.domain.portfolio.model.Portfolio;
 import org.interviewmate.domain.portfolio.repository.PortfolioRepository;
+import org.interviewmate.domain.question.model.Question;
 import org.interviewmate.domain.question.model.dto.request.QuestionAiServerRequestDto;
 import org.interviewmate.domain.question.model.dto.request.QuestionGetRequestDto;
+import org.interviewmate.domain.question.model.dto.response.QuestionCreateResponseDto;
 import org.interviewmate.domain.question.model.dto.response.QuestionGetResponseDto;
 import org.interviewmate.domain.question.model.dto.response.QuestionInfoDto;
 import org.interviewmate.domain.question.repository.QuestionRepository;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +35,9 @@ public class QuestionService {
     private final PortfolioRepository portfolioRepository;
     @Value("${ai-model.url.question}")
     private String questionUri;
+
+    @Value("${ai-model.url.create_question}")
+    private String createQuestionUri;
 
     //질문 추천(요청)
     public QuestionGetResponseDto getQuestion(QuestionGetRequestDto dto){
@@ -49,7 +55,18 @@ public class QuestionService {
                 .job(user.getJob().name())
                 .build();
 
+        List<QuestionInfoDto> portfolioQuestionList = new ArrayList<>();
+        if(!portfolio.getKeywords().isEmpty()){
+            portfolioQuestionList = sendCreateQuestionRequestToAiServer(portfolio.getKeywords());
+
+        }
+        if (portfolioQuestionList.isEmpty()) {
+            aiServerRequestDto.setQuestionNum(10);
+        } else aiServerRequestDto.setQuestionNum(8);
+
         List<QuestionInfoDto> questionList = sendRequestToAiServer(aiServerRequestDto);
+
+        questionList.addAll(portfolioQuestionList);
         return new QuestionGetResponseDto(questionList.size(), questionList);
     }
 
@@ -59,7 +76,7 @@ public class QuestionService {
         List<Long> response = WebClient.create().get()
                 .uri(uriBuilder -> uriBuilder
                         .path(questionUri)
-                        .queryParam("questionNum", dto.getQuestionNum()+1)
+                        .queryParam("questionNum", dto.getQuestionNum())
                         .queryParam("userKeyword", String.join(",", dto.getUserKeyword()))
                         .queryParam("portfolioKeyword", String.join(",", dto.getPortfolioKeyword()))
                         .queryParam("job", dto.getJob())
@@ -70,10 +87,41 @@ public class QuestionService {
                 .block();
 
         List<QuestionInfoDto> questionInfoDtoList = response.stream()
-                .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId+1).orElse(null)))
+                .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId).orElse(null)))
                 .collect(Collectors.toList());
         questionInfoDtoList.removeAll(Collections.singletonList(null));
 
+        return questionInfoDtoList;
+    }
+
+    //ai 서버에 포트폴리오 질문 생성 요청 보내기
+    private List<QuestionInfoDto> sendCreateQuestionRequestToAiServer(List<String> portfolioKeyword) {
+        List<QuestionInfoDto> questionInfoDtoList = new ArrayList<>();
+
+        List<QuestionCreateResponseDto> questionList = WebClient.create().get()
+                .uri(uriBuilder -> uriBuilder
+                        .path(createQuestionUri)
+                        .queryParam("portfolioKeyword", String.join(",", portfolioKeyword))
+                        .build())
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<QuestionCreateResponseDto>>() {
+                })
+                .block();
+
+        if (questionList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        for (QuestionCreateResponseDto question : questionList) {
+            Question buildQuestion = Question.builder()
+                    .question(question.getQuestion())
+                    .bestAnswer(question.getAnswer())
+                    .keyword(question.getKeyword())
+                    .questionToken(new ArrayList<>())
+                    .build();
+            questionRepository.save(buildQuestion);
+            questionInfoDtoList.add(new QuestionInfoDto(buildQuestion));
+        }
         return questionInfoDtoList;
     }
 }
