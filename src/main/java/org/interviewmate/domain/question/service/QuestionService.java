@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,6 +61,7 @@ public class QuestionService {
             portfolioQuestionList = sendCreateQuestionRequestToAiServer(portfolio.getKeywords());
 
         }
+
         if (portfolioQuestionList.isEmpty()) {
             aiServerRequestDto.setQuestionNum(10);
         } else aiServerRequestDto.setQuestionNum(8);
@@ -73,18 +75,28 @@ public class QuestionService {
     //ai 서버에 요청 보내고 응답 받기
     private List<QuestionInfoDto> sendRequestToAiServer(QuestionAiServerRequestDto dto) {
 
-        List<Long> response = WebClient.create().get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(questionUri)
-                        .queryParam("questionNum", dto.getQuestionNum())
-                        .queryParam("userKeyword", String.join(",", dto.getUserKeyword()))
-                        .queryParam("portfolioKeyword", String.join(",", dto.getPortfolioKeyword()))
-                        .queryParam("job", dto.getJob())
-                        .build())
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<List<Long>>() {
-                })
-                .block();
+//        List<Long> response = WebClient.create().get()
+//                .uri(uriBuilder -> uriBuilder
+//                        .path(questionUri)
+//                        .queryParam("questionNum", dto.getQuestionNum())
+//                        .queryParam("userKeyword", String.join(",", dto.getUserKeyword()))
+//                        .queryParam("portfolioKeyword", String.join(",", dto.getPortfolioKeyword()))
+//                        .queryParam("job", dto.getJob())
+//                        .build())
+//                .retrieve()
+//                .bodyToMono(new ParameterizedTypeReference<List<Long>>() {
+//                })
+//                .block();
+        List<Long> response = new ArrayList<>();
+        if (dto.getQuestionNum() == 10) {
+            response = Arrays.asList(1047L, 1916L, 1893L, 1957L, 1958L, 492L, 696L, 703L);
+        }
+        else{
+            response = Arrays.asList(1047L, 1916L, 1893L, 1957L, 1958L, 492L, 696L, 703L, 691L, 697L);
+        }
+
+
+
 
         List<QuestionInfoDto> questionInfoDtoList = response.stream()
                 .map(questionId -> new QuestionInfoDto(questionRepository.findById(questionId).orElse(null)))
