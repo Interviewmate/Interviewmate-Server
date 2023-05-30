@@ -66,9 +66,9 @@ public class QuestionService {
         } else aiServerRequestDto.setQuestionNum(8);
 
         List<QuestionInfoDto> questionList = sendRequestToAiServer(aiServerRequestDto);
-
-        questionList.addAll(portfolioQuestionList);
-        return new QuestionGetResponseDto(questionList.size(), questionList);
+        portfolioQuestionList.addAll(questionList);
+//        questionList.addAll(portfolioQuestionList);
+        return new QuestionGetResponseDto(portfolioQuestionList.size(), portfolioQuestionList);
     }
 
     //ai 서버에 요청 보내고 응답 받기
