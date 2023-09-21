@@ -2,9 +2,12 @@ package org.interviewmate.domain.user.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,25 +31,31 @@ public class User extends BaseEntity {
     private Long userId;
 
     @NotNull
+    @Column(unique = true)
     private String email;
 
     @NotNull
     private String password;
 
     @NotNull
+    @Column(unique = true)
     private String nickName;
 
     @NotNull
     @Enumerated(value = EnumType.STRING)
     private Job job;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<UserKeyword> userKeywords = new ArrayList<>();
 
     @Enumerated(value = EnumType.STRING)
     private BaseStatus baseStatus;
 
-    // todo: token 추가
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Authority> roles = new ArrayList<>();
+
+    @Column(columnDefinition = "TEXT")
+    private String refreshToken;
 
     @Builder
     public User(String email, String password, String nickName, Job job) {
@@ -61,4 +70,14 @@ public class User extends BaseEntity {
         this.baseStatus = baseStatus;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public void setRoles(List<Authority> roles) {
+        this.roles = roles;
+        roles.forEach(role -> role.setUser(this));
+    }
+
+
 }
+

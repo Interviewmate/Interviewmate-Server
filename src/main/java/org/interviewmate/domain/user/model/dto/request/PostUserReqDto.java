@@ -1,7 +1,6 @@
 package org.interviewmate.domain.user.model.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -17,7 +16,7 @@ import org.interviewmate.domain.user.model.User;
 public class PostUserReqDto {
 
     @Email(message = "올바르지 않은 이메일 형식입니다.")
-    @Schema(description = "이메일", example = "moa.moa.interview@gmail.com")
+    @Schema(description = "이자메일", example = "moa.moa.interview@gmail.com")
     private String email;
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[!@#$%&*?])[A-Za-z\\d!@#$%&*?]{8,}$", message = "최소 1개의 문자, 숫자, 기호를 조합하여 8자 이상을 사용하세요.")
     @Schema(description = "비밀번호", example = "Moamoa0302!")
@@ -32,13 +31,9 @@ public class PostUserReqDto {
     @Schema(description = "직무", example = "SERVER", allowableValues = {"SERVER, CLIENT, DATA_SCIENTIST, DATA_ANALYST, AI_ENGINEER, AI_RESEARCHER"})
     private String job;
 
-    @Schema(description = "키워드", example = "[\"Spring\", \"JPA\", \"Java\"]")
-    private List<@NotBlank(message = "기술 스택, 언어를 선택하세요.") String> keywords;
-
     public static User toEntity(PostUserReqDto postUserReqDto) {
         return User.builder()
                 .email(postUserReqDto.getEmail())
-                .password(postUserReqDto.getPassword())
                 .nickName(postUserReqDto.getNickName())
                 .job(Job.valueOf(postUserReqDto.getJob()))
                 .build();
